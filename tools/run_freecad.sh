@@ -17,8 +17,8 @@ Options:
   -h, --help          Show this help.
 
 Defaults:
-  GENERATOR   cad/generators/sector_generator_v23.py, falling back to older revisions
-  OUTPUT DIR  <project root>/output_v23 for V2.3 (matching older revisions)
+  GENERATOR   cad/generators/sector_generator_v30.py, falling back to older revisions
+  OUTPUT DIR  <project root>/output_v30 for V3.0 (matching older revisions)
 
 Environment:
   FREECADCMD          Alternative to --freecadcmd.
@@ -82,7 +82,9 @@ while (($#)); do
 done
 
 if [[ -z "$generator" ]]; then
-    if [[ -f "$project_root/cad/generators/sector_generator_v23.py" ]]; then
+    if [[ -f "$project_root/cad/generators/sector_generator_v30.py" ]]; then
+        generator="$project_root/cad/generators/sector_generator_v30.py"
+    elif [[ -f "$project_root/cad/generators/sector_generator_v23.py" ]]; then
         generator="$project_root/cad/generators/sector_generator_v23.py"
     elif [[ -f "$project_root/cad/generators/sector_generator_v22.py" ]]; then
         generator="$project_root/cad/generators/sector_generator_v22.py"
@@ -105,6 +107,10 @@ generator="$generator_dir/$(basename -- "$generator")"
 generator_name="$(basename -- "$generator")"
 
 case "$generator_name" in
+    sector_generator_v30.py)
+        model_name="island_concept_v30"
+        default_output_name="output_v30"
+        ;;
     sector_generator_v23.py)
         model_name="island_concept_v23"
         default_output_name="output_v23"
@@ -181,11 +187,14 @@ artifacts=(
     "$output_dir/${model_name}_WORK.step"
     "$output_dir/${model_name}_PARTY.step"
 )
-if [[ "$model_name" == "island_concept_v21" || "$model_name" == "island_concept_v22" || "$model_name" == "island_concept_v23" ]]; then
+if [[ "$model_name" == "island_concept_v21" || "$model_name" == "island_concept_v22" || "$model_name" == "island_concept_v23" || "$model_name" == "island_concept_v30" ]]; then
     artifacts+=(
         "$output_dir/${model_name}_collision_report.json"
         "$output_dir/${model_name}_plan.svg"
     )
+fi
+if [[ "$model_name" == "island_concept_v30" ]]; then
+    artifacts+=("$output_dir/${model_name}_party_plan.svg")
 fi
 
 missing=0

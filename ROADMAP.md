@@ -57,6 +57,8 @@ FOLLOW_FAULT   = 50 mm
 
 - Party režim není pouze sada úzkých spojovacích pásů.
 - Druhá sada desek musí vytvořit souvislou horní vrstvu a kompletně překrýt pracovní desky, zaparkované monitory i technické mezery.
+- Koncept V3.0 dělí party vrstvu na centrální modul `CENTRAL_TOP` a tři shodně odvozené ramenní moduly `PARTY_ARM_1/2/3`. Přímé spáry přesně navazují na uzavřený půdorys V2.3, moduly se půdorysně nepřekrývají a společně zakrývají všech devět pracovních desek i parkovací půdorysy monitorů.
+- Horní rovina všech čtyř party modulů je 700 mm; v aktuálním statickém modelu ji tvoří 40mm krycí vrstva podepřená ve výšce 660 mm. Uložení v režimu Work/Hybrid a kinematika přestavení zatím nejsou navrženy ani validovány.
 - Ramenní party desky mohou být v pracovním/hybridním režimu postavené jako vertikální přepážky.
 - Centrální kryt překrývá trojúhelník primárních monitorů.
 - Party transformace vyžaduje zarovnání dotčených pracovních ploch na 700 mm, zaparkování monitorů, přestavení desek a mechanické zajištění.
@@ -318,13 +320,13 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 
 ### M2 — Souvislá party vrstva a kinematika
 
-- [ ] Navrhnout kompletní druhou sadu horních desek překrývající pracovní vrstvu, monitory a mezery.
-- [ ] Rozdělit horní vrstvu na tři ramenní moduly a centrální modul s realizovatelnými spárami.
+- [x] Navrhnout kompletní druhou sadu horních desek překrývající pracovní vrstvu, monitory a mezery.
+- [x] Rozdělit horní vrstvu na tři ramenní moduly a centrální modul s realizovatelnými spárami.
 - [ ] Navrhnout uložení party desek v režimech Work/Hybrid.
 - [ ] Prověřit lift → rotate → lower sekvence a přesné pohybové obálky, nikoliv pouze bounding boxy.
 - [ ] Navrhnout panty, vedení a ruční nebo motorické přestavení.
 - [ ] Umístit mechanické zámky a dvojici potvrzení POSITION/LOCK.
-- [ ] Prověřit, zda se celý party povrch bezpečně zarovná na 700 mm.
+- [x] Staticky prověřit souvislé geometrické zarovnání celého party povrchu na 700 mm; bezpečnost pohybu zůstává součástí otevřené kinematické validace.
 - [ ] Navrhnout samostatný vertikální lift každého monitoru.
 - [ ] Navrhnout horizontální kolejnicový nebo teleskopický posun S/T monitorů.
 - [ ] Porovnat motorické a pasivně vedené natočení monitoru.
@@ -453,9 +455,9 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 
 ## 10. Nejbližší backlog
 
-1. Vymodelovat kompletní souvislou party vrstvu nad uzavřeným pracovním půdorysem V2.3.
-2. Rozdělit party vrstvu na tři ramenní moduly a centrální modul s realizovatelnými spárami.
-3. Navrhnout uložení party desek v režimech Work/Hybrid.
+1. Navrhnout uložení čtyř party modulů v režimech Work/Hybrid.
+2. Navrhnout panty, vedení, způsob přestavení a mechanické zámky party modulů.
+3. Vytvořit přesné pohybové obálky party modulů a ověřit sekvenci Work ↔ Party.
 4. Definovat polohu očí, doporučenou pozorovací vzdálenost, poloměr monitorového oblouku a cílové úhly S/T.
 5. Ověřit monitorovou sestavu pro různé výšky uživatele a parametrizovat pracovní i parkovací polohy.
 6. Navrhnout vertikální lift, horizontální posun a způsob natočení monitorových modulů.
