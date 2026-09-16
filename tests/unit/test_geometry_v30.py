@@ -9,6 +9,7 @@ def _angle_delta(angle_a, angle_b):
 
 def test_primary_is_driven_by_user_edge_and_usable_depth():
     polygon = geometry.primary_polygon(0.0)
+    assert geometry.WORK_DEPTH == 400.0
     assert geometry.distance(polygon[1], polygon[2]) == geometry.USER_EDGE_WIDTH
     assert geometry.distance(
         geometry.midpoint(polygon[0], polygon[3]),
@@ -97,7 +98,7 @@ def test_svg_plan_contains_the_controlling_dimensions():
     assert 'id="monitor-AP"' in svg
     assert 'id="monitor-lift-AS"' in svg
     assert "user edge 800 mm" in svg
-    assert "usable depth 550 mm" in svg
+    assert "primary depth 400 mm" in svg
     assert "technical channel 400 mm" in svg
 
 
@@ -111,7 +112,10 @@ def test_chairs_and_straight_entry_corridors_do_not_cross_work_surfaces():
 
 
 def test_primary_lift_column_stays_out_of_legroom_zone():
-    assert geometry.PRIMARY_LEGROOM_DEPTH == 400.0
+    assert geometry.PRIMARY_LEGROOM_DEPTH == (
+        geometry.WORK_DEPTH - geometry.PRIMARY_REAR_SUPPORT_ZONE_DEPTH
+    )
+    assert geometry.PRIMARY_LEGROOM_DEPTH == 250.0
     assert geometry.PRIMARY_LEGROOM_WIDTH == 600.0
     assert geometry.primary_column_legroom_clearance() >= 20.0
 

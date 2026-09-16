@@ -15,7 +15,7 @@ STATIONS = (("A", 0.0), ("B", 120.0), ("C", 240.0))
 # Primary desk: the user-facing edge and usable monitor-to-user depth are the
 # two controlling dimensions required by M1.
 USER_EDGE_WIDTH = 800.0
-WORK_DEPTH = 550.0
+WORK_DEPTH = 400.0
 MONITOR_EDGE_WIDTH = 1100.0
 PRIMARY_INNER_RADIUS = 640.0
 
@@ -43,7 +43,10 @@ MONITOR_DESK_CLEARANCE = 20.0
 # physical mock-up with users of different body sizes.
 CHAIR_WIDTH = 470.0
 CHAIR_DEPTH = 420.0
-PRIMARY_LEGROOM_DEPTH = 400.0
+# Keep the 150 mm rear support band used by V2.3. With the shallower primary
+# top this leaves a 250 mm reference knee/leg zone for the next ergonomic pass.
+PRIMARY_REAR_SUPPORT_ZONE_DEPTH = 150.0
+PRIMARY_LEGROOM_DEPTH = WORK_DEPTH - PRIMARY_REAR_SUPPORT_ZONE_DEPTH
 PRIMARY_LEGROOM_WIDTH = 600.0
 PRIMARY_COLUMN_RADIUS = PRIMARY_INNER_RADIUS + 70.0
 LIFT_COLUMN_OUTER_RADIUS = 57.5
@@ -561,7 +564,7 @@ def svg_plan():
         '<line x1="%.2f" y1="%.2f" x2="%.2f" y2="%.2f"/>' % (
             svg_point((0.0, PRIMARY_INNER_RADIUS)) + svg_point((0.0, PRIMARY_INNER_RADIUS + WORK_DEPTH))
         ),
-        '<text x="520" y="300" stroke="none">usable depth 550 mm</text>',
+        '<text x="520" y="300" stroke="none">primary depth %.0f mm</text>' % WORK_DEPTH,
         '<text x="500" y="495" text-anchor="middle" stroke="none">technical channel 400 mm</text>',
         '</g>',
         '</svg>',

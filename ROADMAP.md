@@ -17,7 +17,7 @@ Pracovní název projektu a repozitáře: **MultiRoleWorkIsland**.
 - Původní prostorová obálka ramene 1500 × 1600 mm zůstává zatím limitem, nikoliv definitivním tvarem pracovní desky.
 - Technický kanál mezi sousedními plochami na rameni má pracovní hodnotu 400 mm; musí se ověřit podle monitorových liftů, konstrukce a kabelových řetězů.
 - Čelní hrana pracoviště směrem k uživateli má mít přibližně 800 mm.
-- Užitná hloubka před monitorem má být 500–600 mm; výchozí parametr další studie je 550 mm.
+- V3.0 zmenšuje radiální hloubku primární pracovní desky na 400 mm. Původní studie V2.1–V2.3 ověřovala 500–600 mm s výchozí hodnotou 550 mm; při zachování 150mm zadního nosného pásu zbývá 250mm referenční prostor pro nohy, takže ergonomii kratší desky je nutné znovu ověřit fyzickou maketou.
 - P/S/T desky se nesmějí půdorysně překrývat. Jejich tvar se má odvodit od polohy uživatele, monitoru, ergonomické hloubky a hran sousedních pracovišť, nikoliv z pevných obdélníků.
 - Centrální party útvar má trojnásobnou symetrii, ale nemá být pravidelným šestiúhelníkem. Tři hlavní hrany orientované k uživatelům mají přibližně 800 mm; zbývající hrany vzniknou z návaznosti desek.
 - Primární monitory tvoří trojúhelník uprostřed. Sekundární a terciární monitor každého pracoviště se orientují k jeho uživateli; nemají být pouze kolmé k ose ramene.
@@ -302,7 +302,7 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 ### M1 — Ergonomický půdorys V2.1–V2.3
 
 - [x] Nahradit pravidelný centrální šestiúhelník trojnásobně symetrickým nepravidelným obrysem.
-- [x] Parametrizovat čelo 800 mm a pracovní hloubku 500–600 mm, výchozí 550 mm.
+- [x] Parametrizovat čelo 800 mm a pracovní hloubku; původní výchozí hodnota 550 mm je ve V3.0 upravena na 400 mm pro primární desku.
 - [x] Odvodit P/S/T desky z ergonomických hran a odstranit všechny půdorysné překryvy.
 - [x] Ve statické V2.1 studii natočit S/T monitory k uživateli a ověřit základní zorné úhly, vzdálenost a vzájemné zakrytí.
 - [x] Dopočítat tvar a rozměry S/T místo použití pevné šířky 600 mm.
@@ -316,7 +316,7 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 - [ ] Ověřit viditelnost všech monitorů pro různé výšky uživatele.
 - [ ] Parametrizovat pracovní a parkovací polohu každého monitoru.
 
-**Hotovo, když:** žádné dvě pracovní desky se neprotínají, přední a zadní hrany všech desek jsou rovnoběžné, každý uživatel má 500–600 mm použitelné hloubky a tři nezávislé monitory vytvoří ověřený ergonomický oblouk s definovanými mezerami pro celý cílový rozsah uživatelů.
+**Hotovo, když:** žádné dvě pracovní desky se neprotínají, přední a zadní hrany všech desek jsou rovnoběžné, aktuální 400mm primární hloubka projde ergonomickým ověřením a tři nezávislé monitory vytvoří ověřený ergonomický oblouk s definovanými mezerami pro celý cílový rozsah uživatelů.
 
 ### M2 — Souvislá party vrstva a kinematika
 
