@@ -7,11 +7,11 @@ Parametric FreeCAD generator for the complete three-station island.
 
 Run headless (the file intentionally executes also when FreeCADCmd imports it):
 
-    freecadcmd sector_generator_v2.py
+    ./run.sh
 
 or copy/rename it to ``sector_generator_v2.FCMacro`` and execute it as a macro.
 
-Outputs (next to this file, in ``output_v2``):
+Outputs (in the repository-root ``output_v2`` directory):
 
     island_concept_v2.FCStd
     island_concept_v2_WORK.step
@@ -57,7 +57,8 @@ import Part
 # =============================================================================
 
 DOCUMENT_NAME = "island_concept_v2"
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output_v2")
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, "output_v2")
 
 # Main plan geometry
 ARM_LENGTH = 1500.0

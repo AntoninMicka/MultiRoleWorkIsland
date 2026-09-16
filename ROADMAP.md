@@ -208,7 +208,7 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 - [x] Založit Git repozitář.
 - [x] Uchovat V1/V2 jako historické prostorové studie.
 - [x] Přidat shellový runner pro FreeCADCmd a kontrolu výstupů.
-- [ ] Uspořádat adresáře a přesunout generátor bez přerušení buildu.
+- [ ] Uspořádat adresáře a přesunout generátor bez přerušení buildu. *(Přesun proveden; čeká ověření reálným FreeCADCmd.)*
 - [ ] Přidat `.gitignore` pro logy, cache a lokální buildy.
 - [ ] Zapsat podporované verze FreeCADu, Pythonu a OpenCascade.
 - [ ] Přidat CI smoke test: spuštění generátoru, neprázdný FCStd/STEP, počet očekávaných objektů.
