@@ -32,6 +32,7 @@ Pracovní název projektu a repozitáře: **MultiRoleWorkIsland**.
 - Primární monitor může mít kratší nebo nulový horizontální posun. S/T monitory se po vertikálním vysunutí posunou k primárnímu monitoru, aby vytvořily souvislejší oblouk.
 - Koncept V2.2 umisťuje primární monitorový lift za zadní hranu P směrem ke středu a dvojice S/T liftů do technického kanálu mezi sousední desky; monitorové moduly tak neprocházejí půdorysem pracovních desek.
 - V2.2 rozšiřuje zadní hranu P a používá její šikmé boky jako společné hrany navazujících S/T desek podle vyznačeného půdorysu.
+- V2.3 uzavírá půdorys pracovních desek: přední a zadní hrana každé P/S/T desky jsou rovnoběžné; tato podmínka je automaticky kontrolovaný geometrický invariant.
 - Cílová mezera mezi sousedními rámečky v poloze Work je 20–40 mm. Finální hodnota závisí na konkrétních monitorech, rámech, poloměru oblouku a výrobních tolerancích.
 - Spodní hrana vysunutého monitoru musí zůstat bezpečně nad deskami i při povoleném zpoždění os, brzdění, průhybu, vůlích a výrobních tolerancích.
 - Mechanická výška monitoru není jediným bezpečnostním opatřením; Workstation Coordinator současně hlídá relativní výšky P/S/T.
@@ -296,7 +297,7 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 
 **Hotovo, když:** čistý checkout vytvoří stejným příkazem model a oba STEP snapshoty.
 
-### M1 — Ergonomický půdorys V2.1
+### M1 — Ergonomický půdorys V2.1–V2.3
 
 - [x] Nahradit pravidelný centrální šestiúhelník trojnásobně symetrickým nepravidelným obrysem.
 - [x] Parametrizovat čelo 800 mm a pracovní hloubku 500–600 mm, výchozí 550 mm.
@@ -309,10 +310,11 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 - [x] Ve V2.2 umístit P/S/T monitory podle zorného pole nezávisle na středech pracovních desek a přesunout jejich lifty mimo půdorysy desek.
 - [x] Ve V2.2 stanovit cílové úhly natočení S/T monitorů a ověřit mezeru rámečků 20–40 mm.
 - [x] Ve V2.2 ověřit, že monitorový oblouk neomezuje pracovní hloubku 500–600 mm.
+- [x] Ve V2.3 sjednotit každou pracovní desku tak, aby její přední a zadní hrana byly rovnoběžné, a uzavřít půdorys pracovních desek.
 - [ ] Ověřit viditelnost všech monitorů pro různé výšky uživatele.
 - [ ] Parametrizovat pracovní a parkovací polohu každého monitoru.
 
-**Hotovo, když:** žádné dvě pracovní desky se neprotínají, každý uživatel má 500–600 mm použitelné hloubky a tři nezávislé monitory vytvoří ověřený ergonomický oblouk s definovanými mezerami pro celý cílový rozsah uživatelů.
+**Hotovo, když:** žádné dvě pracovní desky se neprotínají, přední a zadní hrany všech desek jsou rovnoběžné, každý uživatel má 500–600 mm použitelné hloubky a tři nezávislé monitory vytvoří ověřený ergonomický oblouk s definovanými mezerami pro celý cílový rozsah uživatelů.
 
 ### M2 — Souvislá party vrstva a kinematika
 
@@ -451,15 +453,16 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 
 ## 10. Nejbližší backlog
 
-1. Definovat polohu očí, doporučenou pozorovací vzdálenost, poloměr monitorového oblouku a cílové úhly S/T.
-2. Navrhnout pracovní sestavu s mezerami rámečků 20–40 mm a ověřit ji pro různé výšky uživatele.
-3. Parametrizovat pracovní a parkovací polohu všech devíti nezávislých monitorových modulů.
-4. Navrhnout vertikální lift, horizontální posun a způsob natočení monitorových modulů.
-5. Vytvořit přesné pohybové obálky monitorů a ověřit kolize s deskami, kabely a party vrstvou.
-6. Vymodelovat kompletní souvislou party vrstvu nad pracovní vrstvou.
-7. Změřit potřebnou šířku technického kanálu podle reálných monitorových liftů, horizontálních posunů a kabelových řetězů.
-8. Založit softwarový simulátor stavových automatů dříve, než se vyberou finální pohony.
-9. Sepsat první tabulku I/O, stavů, interlocků a vlastnictví os včetně monitorových modulů.
+1. Vymodelovat kompletní souvislou party vrstvu nad uzavřeným pracovním půdorysem V2.3.
+2. Rozdělit party vrstvu na tři ramenní moduly a centrální modul s realizovatelnými spárami.
+3. Navrhnout uložení party desek v režimech Work/Hybrid.
+4. Definovat polohu očí, doporučenou pozorovací vzdálenost, poloměr monitorového oblouku a cílové úhly S/T.
+5. Ověřit monitorovou sestavu pro různé výšky uživatele a parametrizovat pracovní i parkovací polohy.
+6. Navrhnout vertikální lift, horizontální posun a způsob natočení monitorových modulů.
+7. Vytvořit přesné pohybové obálky monitorů a ověřit kolize s deskami, kabely a party vrstvou.
+8. Změřit potřebnou šířku technického kanálu podle reálných monitorových liftů, horizontálních posunů a kabelových řetězů.
+9. Založit softwarový simulátor stavových automatů dříve, než se vyberou finální pohony.
+10. Sepsat první tabulku I/O, stavů, interlocků a vlastnictví os včetně monitorových modulů.
 
 ## 11. Otevřené otázky
 
