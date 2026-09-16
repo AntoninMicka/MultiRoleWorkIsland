@@ -3,34 +3,34 @@
 <rect width="1000" height="1000" fill="#fafafa"/>
 <g stroke="#25313b" stroke-width="1.5" fill-opacity="0.60">
 <polygon id="desk-AP" points="640.80,621.00 728.80,588.00 728.80,412.00 640.80,379.00" fill="#3f8dd3"/>
-<polygon id="desk-AS" points="640.80,379.00 750.80,188.47 838.80,221.47 728.80,412.00" fill="#3db889"/>
-<polygon id="desk-AT" points="640.80,621.00 750.80,811.53 838.80,778.53 728.80,588.00" fill="#ed8b35"/>
+<polygon id="desk-AS" points="640.80,379.00 623.88,351.43 733.88,160.90 838.80,221.47 728.80,412.00" fill="#3db889"/>
+<polygon id="desk-AT" points="640.80,621.00 623.88,648.57 733.88,839.10 838.80,778.53 728.80,588.00" fill="#ed8b35"/>
 <polygon id="desk-BP" points="534.39,317.56 461.81,257.85 309.39,345.85 324.81,438.56" fill="#3f8dd3"/>
-<polygon id="desk-BS" points="324.81,438.56 104.81,438.56 89.39,345.85 309.39,345.85" fill="#3db889"/>
-<polygon id="desk-BT" points="534.39,317.56 644.39,127.04 571.81,67.33 461.81,257.85" fill="#ed8b35"/>
+<polygon id="desk-BS" points="324.81,438.56 309.39,467.00 89.39,467.00 89.39,345.85 309.39,345.85" fill="#3db889"/>
+<polygon id="desk-BT" points="534.39,317.56 566.73,318.43 676.73,127.90 571.81,67.33 461.81,257.85" fill="#ed8b35"/>
 <polygon id="desk-CP" points="324.81,561.44 309.39,654.15 461.81,742.15 534.39,682.44" fill="#3f8dd3"/>
-<polygon id="desk-CS" points="534.39,682.44 644.39,872.96 571.81,932.67 461.81,742.15" fill="#3db889"/>
-<polygon id="desk-CT" points="324.81,561.44 104.81,561.44 89.39,654.15 309.39,654.15" fill="#ed8b35"/>
+<polygon id="desk-CS" points="534.39,682.44 566.73,681.57 676.73,872.10 571.81,932.67 461.81,742.15" fill="#3db889"/>
+<polygon id="desk-CT" points="324.81,561.44 309.39,533.00 89.39,533.00 89.39,654.15 309.39,654.15" fill="#ed8b35"/>
 <polygon id="central-party" points="309.39,654.15 461.81,742.15 728.80,588.00 728.80,412.00 461.81,257.85 309.39,345.85" fill="#e8bd45" stroke-dasharray="8 5"/>
 <g fill="#18212a" fill-opacity="0.88" stroke="#05090c">
 <polygon id="monitor-AP" points="583.82,571.50 592.18,571.50 592.18,428.50 583.82,428.50"/>
 <circle id="monitor-lift-AP" cx="588.00" cy="500.00" r="9.90" fill="#dbe4ea"/>
-<polygon id="monitor-AS" points="574.62,415.89 581.73,420.28 646.52,315.49 639.41,311.10"/>
-<circle id="monitor-lift-AS" cx="610.57" cy="365.69" r="9.90" fill="#dbe4ea"/>
-<polygon id="monitor-AT" points="639.41,688.90 646.52,684.51 581.73,579.72 574.62,584.11"/>
-<circle id="monitor-lift-AT" cx="610.57" cy="634.31" r="9.90" fill="#dbe4ea"/>
+<polygon id="monitor-AS" points="571.39,419.21 578.57,423.48 641.54,317.59 634.35,313.32"/>
+<circle id="monitor-lift-AS" cx="606.46" cy="368.40" r="9.90" fill="#dbe4ea"/>
+<polygon id="monitor-AT" points="634.35,686.68 641.54,682.41 578.57,576.52 571.39,580.79"/>
+<circle id="monitor-lift-AT" cx="606.46" cy="631.60" r="9.90" fill="#dbe4ea"/>
 <polygon id="monitor-BP" points="520.01,391.66 515.83,384.42 391.99,455.92 396.17,463.16"/>
 <circle id="monitor-lift-BP" cx="456.00" cy="423.79" r="9.90" fill="#dbe4ea"/>
-<polygon id="monitor-BS" points="389.85,477.44 390.10,469.08 266.95,465.36 266.70,473.72"/>
-<circle id="monitor-lift-BS" cx="328.40" cy="471.40" r="9.90" fill="#dbe4ea"/>
-<polygon id="monitor-BT" points="593.89,284.82 586.53,280.86 528.17,389.36 535.54,393.32"/>
-<circle id="monitor-lift-BT" cx="561.03" cy="337.09" r="9.90" fill="#dbe4ea"/>
+<polygon id="monitor-BS" points="394.34,478.57 394.45,470.21 271.26,468.63 271.15,476.99"/>
+<circle id="monitor-lift-BS" cx="332.80" cy="473.60" r="9.90" fill="#dbe4ea"/>
+<polygon id="monitor-BT" points="594.50,290.31 587.20,286.22 526.98,393.69 534.27,397.78"/>
+<circle id="monitor-lift-BT" cx="560.74" cy="342.00" r="9.90" fill="#dbe4ea"/>
 <polygon id="monitor-CP" points="396.17,536.84 391.99,544.08 515.83,615.58 520.01,608.34"/>
 <circle id="monitor-lift-CP" cx="456.00" cy="576.21" r="9.90" fill="#dbe4ea"/>
-<polygon id="monitor-CS" points="535.54,606.68 528.17,610.64 586.53,719.14 593.89,715.18"/>
-<circle id="monitor-lift-CS" cx="561.03" cy="662.91" r="9.90" fill="#dbe4ea"/>
-<polygon id="monitor-CT" points="266.70,526.28 266.95,534.64 390.10,530.92 389.85,522.56"/>
-<circle id="monitor-lift-CT" cx="328.40" cy="528.60" r="9.90" fill="#dbe4ea"/>
+<polygon id="monitor-CS" points="534.27,602.22 526.98,606.31 587.20,713.78 594.50,709.69"/>
+<circle id="monitor-lift-CS" cx="560.74" cy="658.00" r="9.90" fill="#dbe4ea"/>
+<polygon id="monitor-CT" points="271.15,523.01 271.26,531.37 394.45,529.79 394.34,521.43"/>
+<circle id="monitor-lift-CT" cx="332.80" cy="526.40" r="9.90" fill="#dbe4ea"/>
 </g>
 <g fill="none" stroke="#6b7280" stroke-dasharray="5 4">
 <polygon id="chair-A" points="781.60,551.70 874.00,551.70 874.00,448.30 781.60,448.30"/>
@@ -46,6 +46,6 @@
 <text x="500" y="250" text-anchor="middle" stroke="none">user edge 800 mm</text>
 <line x1="500.00" y1="359.20" x2="500.00" y2="271.20"/>
 <text x="520" y="300" stroke="none">primary depth 400 mm</text>
-<text x="500" y="495" text-anchor="middle" stroke="none">technical channel 400 mm</text>
+<text x="500" y="495" text-anchor="middle" stroke="none">technical channel 300 mm</text>
 </g>
 </svg>

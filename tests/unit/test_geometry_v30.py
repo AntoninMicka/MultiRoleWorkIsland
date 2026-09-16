@@ -27,6 +27,18 @@ def test_front_and_rear_edges_are_parallel_on_every_desk():
     assert geometry.nonparallel_desk_edges() == []
 
 
+def test_side_desks_bound_a_300_mm_technical_channel():
+    assert geometry.TECH_CHANNEL_WIDTH == 300.0
+    assert geometry.technical_channel_edge_failures() == []
+    for _station, station_angle in geometry.STATIONS:
+        for kind in ("S", "T"):
+            arm_delta, channel_edge, _outer_edge = geometry._side_lane(kind)
+            polygon = geometry.side_polygon(kind, station_angle)
+            for point in polygon[1:3]:
+                local = geometry.rotate_point(point, -(station_angle + arm_delta))
+                assert math.isclose(local[1], channel_edge, abs_tol=1e-9)
+
+
 def test_side_monitors_face_their_station_user_instead_of_arm_axis():
     for _station, station_angle in geometry.STATIONS:
         user = geometry.user_position(station_angle)
@@ -99,7 +111,7 @@ def test_svg_plan_contains_the_controlling_dimensions():
     assert 'id="monitor-lift-AS"' in svg
     assert "user edge 800 mm" in svg
     assert "primary depth 400 mm" in svg
-    assert "technical channel 400 mm" in svg
+    assert "technical channel 300 mm" in svg
 
 
 def test_chairs_and_straight_entry_corridors_do_not_cross_work_surfaces():
@@ -136,9 +148,23 @@ def test_monitor_arc_has_target_gap_between_adjacent_frames():
 
 
 def test_side_monitor_lifts_use_the_technical_channel():
+    assert geometry.TECH_CHANNEL_WIDTH == 300.0
     for _station, station_angle in geometry.STATIONS:
         for kind in ("S", "T"):
             arm_delta, _channel_edge, _outer_edge = geometry._side_lane(kind)
-            x, y, _facing = geometry.monitor_pose(kind, station_angle)
+            x, y = geometry.monitor_lift_position(kind, station_angle)
             local = geometry.rotate_point((x, y), -(station_angle + arm_delta))
-            assert abs(local[1]) < geometry.TECH_CHANNEL_WIDTH / 2.0
+            assert (
+                abs(local[1]) + geometry.MONITOR_LIFT_RADIUS
+                <= geometry.TECH_CHANNEL_WIDTH / 2.0
+            )
+            monitor_x, monitor_y, _facing = geometry.monitor_pose(kind, station_angle)
+            expected_translation = math.hypot(
+                geometry.SIDE_LIFT_RADIUS - geometry.SIDE_MONITOR_RADIUS,
+                geometry.SIDE_MONITOR_CHANNEL_OFFSET - geometry.SIDE_LIFT_CHANNEL_OFFSET,
+            )
+            assert math.isclose(
+                geometry.distance((x, y), (monitor_x, monitor_y)),
+                expected_translation,
+                abs_tol=1e-9,
+            )

@@ -15,7 +15,7 @@ Pracovní název projektu a repozitáře: **MultiRoleWorkIsland**.
 - Tři pracoviště A/B/C po 120° a tři společná ramena.
 - Devět nezávislých pracovních ploch: PA/SA/TA, PB/SB/TB a PC/SC/TC.
 - Původní prostorová obálka ramene 1500 × 1600 mm zůstává zatím limitem, nikoliv definitivním tvarem pracovní desky.
-- Technický kanál mezi sousedními plochami na rameni má pracovní hodnotu 400 mm; musí se ověřit podle monitorových liftů, konstrukce a kabelových řetězů.
+- Technický kanál mezi sousedními plochami na rameni má ve V3.0 pracovní hodnotu 300 mm; musí se ověřit podle reálných monitorových liftů, konstrukce a kabelových řetězů.
 - Čelní hrana pracoviště směrem k uživateli má mít přibližně 800 mm.
 - V3.0 zmenšuje radiální hloubku primární pracovní desky na 400 mm. Původní studie V2.1–V2.3 ověřovala 500–600 mm s výchozí hodnotou 550 mm; při zachování 150mm zadního nosného pásu zbývá 250mm referenční prostor pro nohy, takže ergonomii kratší desky je nutné znovu ověřit fyzickou maketou.
 - P/S/T desky se nesmějí půdorysně překrývat. Jejich tvar se má odvodit od polohy uživatele, monitoru, ergonomické hloubky a hran sousedních pracovišť, nikoliv z pevných obdélníků.
@@ -33,6 +33,7 @@ Pracovní název projektu a repozitáře: **MultiRoleWorkIsland**.
 - Koncept V2.2 umisťuje primární monitorový lift za zadní hranu P směrem ke středu a dvojice S/T liftů do technického kanálu mezi sousední desky; monitorové moduly tak neprocházejí půdorysem pracovních desek.
 - V2.2 rozšiřuje zadní hranu P a používá její šikmé boky jako společné hrany navazujících S/T desek podle vyznačeného půdorysu.
 - V2.3 uzavírá půdorys pracovních desek: přední a zadní hrana každé P/S/T desky jsou rovnoběžné; tato podmínka je automaticky kontrolovaný geometrický invariant.
+- V3.0 zužuje technický kanál na 300 mm. Osy dvojice 90mm monitorových liftů leží 95 mm od osy kanálu, takže každému zbývá 10mm boční rezerva; S/T monitor se z osy liftu přesune přibližně o 32 mm do bezkolizní pracovní polohy.
 - Cílová mezera mezi sousedními rámečky v poloze Work je 20–40 mm. Finální hodnota závisí na konkrétních monitorech, rámech, poloměru oblouku a výrobních tolerancích.
 - Spodní hrana vysunutého monitoru musí zůstat bezpečně nad deskami i při povoleném zpoždění os, brzdění, průhybu, vůlích a výrobních tolerancích.
 - Mechanická výška monitoru není jediným bezpečnostním opatřením; Workstation Coordinator současně hlídá relativní výšky P/S/T.
@@ -393,7 +394,7 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 - [ ] Ověřit dočasné převzetí os Central Coordinator-em.
 - [ ] Ověřit mechanické zámky, koncové spínače a krokovou ruční proceduru.
 - [ ] Otestovat rozdílné výšky sousedních pracovišť a odmítnuté transformace.
-- [ ] Ověřit technický kanál 400 mm s reálnými lifty a kabeláží.
+- [ ] Ověřit technický kanál 300 mm s reálnými lifty a kabeláží.
 
 **Hotovo, když:** jedno rameno bezpečně přechází mezi Work/Hybrid/Party a chybné podmínky vedou k vysvětlenému odmítnutí.
 

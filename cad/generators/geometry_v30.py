@@ -23,16 +23,20 @@ PRIMARY_INNER_RADIUS = 640.0
 # channel.  Its diagonal inner edge is derived from the primary/user zone.
 ARM_OUTER_RADIUS = 1950.0
 ARM_HALF_WIDTH = 800.0
-TECH_CHANNEL_WIDTH = 400.0
+TECH_CHANNEL_WIDTH = 300.0
 SIDE_DESK_LENGTH = 1000.0
 
 # User and display reference positions used to aim all monitors.  The primary
-# lift sits behind the rear P edge; paired side lifts sit inside the 400 mm
+# lift sits behind the rear P edge; paired side lifts sit inside the 300 mm
 # channel rather than passing through their S/T desk surfaces.
 USER_RADIUS = PRIMARY_INNER_RADIUS + WORK_DEPTH + 450.0
 PRIMARY_MONITOR_RADIUS = 400.0
-SIDE_MONITOR_RADIUS = 780.0
-SIDE_MONITOR_CHANNEL_OFFSET = 130.0
+SIDE_MONITOR_RADIUS = 760.0
+SIDE_MONITOR_CHANNEL_OFFSET = 120.0
+# The lift axis remains inside the narrower channel while the monitor body
+# translates diagonally into its ergonomic WORK pose.
+SIDE_LIFT_RADIUS = 780.0
+SIDE_LIFT_CHANNEL_OFFSET = 95.0
 PRIMARY_MONITOR_WIDTH = 650.0
 SIDE_MONITOR_WIDTH = 560.0
 MONITOR_BODY_THICKNESS = 38.0
@@ -117,17 +121,19 @@ def _side_lane(kind):
 
 def side_polygon(kind, station_angle):
     """Return a side desk whose front and rear edges are exactly parallel."""
-    arm_delta, _channel_edge, _outer_edge = _side_lane(kind)
+    arm_delta, channel_edge, _outer_edge = _side_lane(kind)
     arm_angle = station_angle + arm_delta
     primary = primary_polygon(station_angle)
     if kind == "S":
         rear_start, front_start = primary[3], primary[2]
     else:
         rear_start, front_start = primary[0], primary[1]
+    front_local = rotate_point(front_start, -arm_angle)
+    channel_start = local_to_world(front_local[0], channel_edge, arm_angle)
     extension = local_to_world(SIDE_DESK_LENGTH, 0.0, arm_angle)
-    rear_end = (rear_start[0] + extension[0], rear_start[1] + extension[1])
+    rear_end = (channel_start[0] + extension[0], channel_start[1] + extension[1])
     front_end = (front_start[0] + extension[0], front_start[1] + extension[1])
-    return (rear_start, rear_end, front_end, front_start)
+    return (rear_start, channel_start, rear_end, front_end, front_start)
 
 
 def cross_product(vector_a, vector_b):
@@ -145,7 +151,7 @@ def desk_front_rear_edges(name, polygon):
     """Return the user-facing and rear edge pair for a P/S/T desk polygon."""
     if name[-1] == "P":
         return ((polygon[1], polygon[2]), (polygon[0], polygon[3]))
-    return ((polygon[3], polygon[2]), (polygon[0], polygon[1]))
+    return ((polygon[-1], polygon[-2]), (polygon[1], polygon[2]))
 
 
 def nonparallel_desk_edges():
@@ -154,6 +160,21 @@ def nonparallel_desk_edges():
         front, rear = desk_front_rear_edges(name, polygon)
         if not edges_parallel(front[0], front[1], rear[0], rear[1]):
             failures.append(name)
+    return failures
+
+
+def technical_channel_edge_failures(tolerance=1e-7):
+    """Return side desks whose inner edge does not bound the target channel."""
+    failures = []
+    for station, station_angle in STATIONS:
+        for kind in ("S", "T"):
+            arm_delta, channel_edge, _outer_edge = _side_lane(kind)
+            polygon = side_polygon(kind, station_angle)
+            for point in polygon[1:3]:
+                local = rotate_point(point, -(station_angle + arm_delta))
+                if abs(local[1] - channel_edge) > tolerance:
+                    failures.append(station + kind)
+                    break
     return failures
 
 
@@ -268,6 +289,25 @@ def _side_monitor_center(kind, station_angle):
     )
 
 
+def _side_lift_center(kind, station_angle):
+    arm_delta, _channel_edge, _outer_edge = _side_lane(kind)
+    channel_offset = -SIDE_LIFT_CHANNEL_OFFSET if kind == "S" else SIDE_LIFT_CHANNEL_OFFSET
+    return local_to_world(
+        SIDE_LIFT_RADIUS,
+        channel_offset,
+        station_angle + arm_delta,
+    )
+
+
+def monitor_lift_position(kind, station_angle):
+    """Return the fixed lift axis; S/T bodies translate from it in WORK."""
+    if kind == "P":
+        return local_to_world(PRIMARY_MONITOR_RADIUS, 0.0, station_angle)
+    if kind in ("S", "T"):
+        return _side_lift_center(kind, station_angle)
+    raise ValueError("Unknown monitor kind: %s" % kind)
+
+
 def monitor_pose(kind, station_angle):
     """Return ``(x, y, facing_angle)`` with the display aimed at its user."""
     if kind == "P":
@@ -364,7 +404,7 @@ def monitor_lift_desk_collisions():
     required = MONITOR_LIFT_RADIUS + MONITOR_DESK_CLEARANCE
     for station, station_angle in STATIONS:
         for kind in ("P", "S", "T"):
-            x, y, _facing = monitor_pose(kind, station_angle)
+            x, y = monitor_lift_position(kind, station_angle)
             monitor_name = station + kind
             for desk_name, desk in sorted(desks.items()):
                 clearance = point_polygon_clearance((x, y), desk)
@@ -446,25 +486,22 @@ def party_module_polygons():
     return result
 
 
-def _sample_quadrilateral(polygon, steps=12):
-    """Sample a convex quadrilateral, including edges, by bilinear interpolation."""
+def _sample_convex_polygon(polygon, steps=12):
+    """Sample a convex polygon as a fan of triangles, including its edges."""
     samples = []
-    for row in range(steps + 1):
-        v = row / float(steps)
-        left = (
-            polygon[0][0] * (1.0 - v) + polygon[3][0] * v,
-            polygon[0][1] * (1.0 - v) + polygon[3][1] * v,
-        )
-        right = (
-            polygon[1][0] * (1.0 - v) + polygon[2][0] * v,
-            polygon[1][1] * (1.0 - v) + polygon[2][1] * v,
-        )
-        for column in range(steps + 1):
-            u = column / float(steps)
-            samples.append((
-                left[0] * (1.0 - u) + right[0] * u,
-                left[1] * (1.0 - u) + right[1] * u,
-            ))
+    anchor = polygon[0]
+    for index in range(1, len(polygon) - 1):
+        point_b = polygon[index]
+        point_c = polygon[index + 1]
+        for row in range(steps + 1):
+            weight_b = row / float(steps)
+            for column in range(steps - row + 1):
+                weight_c = column / float(steps)
+                weight_a = 1.0 - weight_b - weight_c
+                samples.append((
+                    anchor[0] * weight_a + point_b[0] * weight_b + point_c[0] * weight_c,
+                    anchor[1] * weight_a + point_b[1] * weight_b + point_c[1] * weight_c,
+                ))
     return samples
 
 
@@ -479,7 +516,7 @@ def party_coverage_failures():
     sources.update(desk_polygons())
     sources.update(("MONITOR_" + name, polygon) for name, polygon in monitor_body_polygons().items())
     for name, polygon in sorted(sources.items()):
-        samples = _sample_quadrilateral(polygon)
+        samples = _sample_convex_polygon(polygon)
         uncovered = [point for point in samples if not point_covered_by_party(point)]
         if uncovered:
             failures.append((name, len(uncovered)))
@@ -565,7 +602,8 @@ def svg_plan():
             svg_point((0.0, PRIMARY_INNER_RADIUS)) + svg_point((0.0, PRIMARY_INNER_RADIUS + WORK_DEPTH))
         ),
         '<text x="520" y="300" stroke="none">primary depth %.0f mm</text>' % WORK_DEPTH,
-        '<text x="500" y="495" text-anchor="middle" stroke="none">technical channel 400 mm</text>',
+        '<text x="500" y="495" text-anchor="middle" stroke="none">technical channel %.0f mm</text>'
+        % TECH_CHANNEL_WIDTH,
         '</g>',
         '</svg>',
     ))

@@ -1,11 +1,11 @@
 {
   "adjacent_frame_gaps": {
-    "AP-AS": 38.541965,
-    "AP-AT": 38.541965,
-    "BP-BS": 38.541965,
-    "BP-BT": 38.541965,
-    "CP-CS": 38.541965,
-    "CP-CT": 38.541965
+    "AP-AS": 32.986176,
+    "AP-AT": 32.986176,
+    "BP-BS": 32.986176,
+    "BP-BT": 32.986176,
+    "CP-CS": 32.986176,
+    "CP-CT": 32.986176
   },
   "cad_collisions": [],
   "desk_count": 9,
@@ -33,20 +33,20 @@
       "y": 0.0
     },
     "AS": {
-      "facing_angle": -31.727665,
-      "half_angular_span": 13.56024,
-      "sight_angle": 148.272335,
-      "viewing_distance": 1160.905577,
-      "x": 502.583302,
-      "y": 610.499815
+      "facing_angle": -30.734284,
+      "half_angular_span": 13.453433,
+      "sight_angle": 149.265716,
+      "viewing_distance": 1170.47397,
+      "x": 483.923048,
+      "y": 598.179307
     },
     "AT": {
-      "facing_angle": 31.727665,
-      "half_angular_span": 13.56024,
-      "sight_angle": -148.272335,
-      "viewing_distance": 1160.905577,
-      "x": 502.583302,
-      "y": -610.499815
+      "facing_angle": 30.734284,
+      "half_angular_span": 13.453433,
+      "sight_angle": -149.265716,
+      "viewing_distance": 1170.47397,
+      "x": 483.923048,
+      "y": -598.179307
     },
     "BP": {
       "facing_angle": 120.0,
@@ -57,20 +57,20 @@
       "y": 346.410162
     },
     "BS": {
-      "facing_angle": 88.272335,
-      "half_angular_span": 13.56024,
-      "sight_angle": -91.727665,
-      "viewing_distance": 1160.905577,
-      "x": -780.0,
-      "y": 130.0
+      "facing_angle": 89.265716,
+      "half_angular_span": 13.453433,
+      "sight_angle": -90.734284,
+      "viewing_distance": 1170.47397,
+      "x": -760.0,
+      "y": 120.0
     },
     "BT": {
-      "facing_angle": 151.727665,
-      "half_angular_span": 13.56024,
-      "sight_angle": -28.272335,
-      "viewing_distance": 1160.905577,
-      "x": 277.416698,
-      "y": 740.499815
+      "facing_angle": 150.734284,
+      "half_angular_span": 13.453433,
+      "sight_angle": -29.265716,
+      "viewing_distance": 1170.47397,
+      "x": 276.076952,
+      "y": 718.179307
     },
     "CP": {
       "facing_angle": -120.0,
@@ -81,20 +81,20 @@
       "y": -346.410162
     },
     "CS": {
-      "facing_angle": -151.727665,
-      "half_angular_span": 13.56024,
-      "sight_angle": 28.272335,
-      "viewing_distance": 1160.905577,
-      "x": 277.416698,
-      "y": -740.499815
+      "facing_angle": -150.734284,
+      "half_angular_span": 13.453433,
+      "sight_angle": 29.265716,
+      "viewing_distance": 1170.47397,
+      "x": 276.076952,
+      "y": -718.179307
     },
     "CT": {
-      "facing_angle": -88.272335,
-      "half_angular_span": 13.56024,
-      "sight_angle": 91.727665,
-      "viewing_distance": 1160.905577,
-      "x": -780.0,
-      "y": -130.0
+      "facing_angle": -89.265716,
+      "half_angular_span": 13.453433,
+      "sight_angle": 90.734284,
+      "viewing_distance": 1170.47397,
+      "x": -760.0,
+      "y": -120.0
     }
   },
   "nonparallel_desk_edges": [],
@@ -103,7 +103,8 @@
     "monitor_frame_gap_max": 40.0,
     "monitor_frame_gap_min": 20.0,
     "primary_rear_edge_width": 1100.0,
-    "technical_channel_width": 400.0,
+    "side_lift_channel_edge_clearance": 10.0,
+    "technical_channel_width": 300.0,
     "usable_work_depth": 400.0,
     "user_edge_width": 800.0
   },
@@ -127,5 +128,6 @@
   },
   "plan_collisions": [],
   "status": "pass",
+  "technical_channel_edge_failures": [],
   "units": "mm"
 }

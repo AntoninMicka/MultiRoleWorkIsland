@@ -44,7 +44,7 @@ Station A faces the hub along angle 0 degrees. Stations B and C are rotated by
 * T occupies the counter-clockwise/inner lane of the arm at station angle - 60 deg.
 
 Consequently each physical arm contains two neighbouring station planes with a
-400 mm central shaft. This corrects the left-lane sign ambiguity in V1.
+300 mm central shaft. This corrects the left-lane sign ambiguity in V1.
 """
 
 from __future__ import print_function
@@ -69,7 +69,7 @@ OUTPUT_DIR = os.path.join(PROJECT_ROOT, "output_v30")
 # Main plan geometry
 ARM_LENGTH = 1500.0
 ARM_WIDTH = 1600.0
-SHAFT_GAP = 400.0
+SHAFT_GAP = Geometry.TECH_CHANNEL_WIDTH
 HUB_RADIUS = 450.0
 ARM_START = HUB_RADIUS
 
@@ -292,7 +292,7 @@ def column_inner_shape(kind, station_angle, top_height):
     return cylinder_at(x, y, COLUMN_INNER_DIA, height, z0)
 
 
-def monitor_frame_shape(angle_deg, center_x, center_y, desk_top, width):
+def monitor_frame_shape(angle_deg, center_x, center_y, lift_x, lift_y, desk_top, width):
     bottom = desk_top + MONITOR_BOTTOM_GAP
     body = oriented_box_center(
         MONITOR_THICKNESS,
@@ -304,8 +304,8 @@ def monitor_frame_shape(angle_deg, center_x, center_y, desk_top, width):
         angle_deg,
     )
     support = cylinder_at(
-        center_x,
-        center_y,
+        lift_x,
+        lift_y,
         MONITOR_LIFT_DIA,
         MONITOR_BOTTOM_GAP,
         desk_top,
@@ -513,7 +513,10 @@ def build_work_mode(doc, group):
         station_group = station_groups[station]
         for kind in ("P", "S", "T"):
             angle, center_x, center_y, width = monitor_location(kind, station_angle)
-            frame = monitor_frame_shape(angle, center_x, center_y, WORK_HEIGHT, width)
+            lift_x, lift_y = Geometry.monitor_lift_position(kind, station_angle)
+            frame = monitor_frame_shape(
+                angle, center_x, center_y, lift_x, lift_y, WORK_HEIGHT, width
+            )
             display = monitor_display_shape(angle, center_x, center_y, WORK_HEIGHT, width)
             objects.append(add_feature(
                 doc, station_group, frame,
@@ -592,7 +595,7 @@ def build_motion_envelopes(doc, group):
                 COLORS["ENVELOPE"], "ENVELOPE", station, "%s desk travel" % kind, 82,
             ))
 
-            _angle, x, y, _width = monitor_location(kind, station_angle)
+            x, y = Geometry.monitor_lift_position(kind, station_angle)
             monitor_env = cylinder_at(
                 x,
                 y,
@@ -685,6 +688,12 @@ def write_design_reports(cad_collisions):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     plan_collisions = Geometry.collision_pairs()
     nonparallel_desk_edges = Geometry.nonparallel_desk_edges()
+    technical_channel_edge_failures = Geometry.technical_channel_edge_failures()
+    side_lift_channel_clearance = (
+        Geometry.TECH_CHANNEL_WIDTH / 2.0
+        - Geometry.SIDE_LIFT_CHANNEL_OFFSET
+        - Geometry.MONITOR_LIFT_RADIUS
+    )
     monitor_lift_desk_collisions = Geometry.monitor_lift_desk_collisions()
     monitor_body_desk_collisions = Geometry.monitor_body_desk_collisions()
     monitor_body_collisions = Geometry.monitor_body_collisions()
@@ -711,6 +720,8 @@ def write_design_reports(cad_collisions):
     failed = any((
         plan_collisions,
         nonparallel_desk_edges,
+        technical_channel_edge_failures,
+        side_lift_channel_clearance < 0.0,
         cad_collisions,
         monitor_lift_desk_collisions,
         monitor_body_desk_collisions,
@@ -728,6 +739,7 @@ def write_design_reports(cad_collisions):
         "layout": "monitors behind desk edges and inside technical channels",
         "desk_count": len(Geometry.desk_polygons()),
         "nonparallel_desk_edges": nonparallel_desk_edges,
+        "technical_channel_edge_failures": technical_channel_edge_failures,
         "plan_collisions": [list(pair) for pair in plan_collisions],
         "cad_collisions": [
             {"desk_a": item[0], "desk_b": item[1], "volume": item[2]}
@@ -755,6 +767,7 @@ def write_design_reports(cad_collisions):
             "user_edge_width": Geometry.USER_EDGE_WIDTH,
             "usable_work_depth": Geometry.WORK_DEPTH,
             "technical_channel_width": Geometry.TECH_CHANNEL_WIDTH,
+            "side_lift_channel_edge_clearance": side_lift_channel_clearance,
             "central_user_edge": Geometry.CENTRAL_USER_EDGE,
             "primary_rear_edge_width": Geometry.MONITOR_EDGE_WIDTH,
             "monitor_frame_gap_min": 20.0,
