@@ -30,6 +30,8 @@ Pracovní název projektu a repozitáře: **MultiRoleWorkIsland**.
 - Každý z devíti monitorů je samostatný mechanický modul. Sousední monitory se mechanicky nespojují, nezamykají a nepřenášejí mezi sebou zatížení; společná pracovní poloha vzniká pouze koordinovaným řízením.
 - Každý monitorový modul zajišťuje vertikální výsun z parkovací kapsy, horizontální posun do pracovní polohy, natočení k uživateli, snímání rozhodujících poloh a bezpečný návrat do parkovací polohy.
 - Primární monitor může mít kratší nebo nulový horizontální posun. S/T monitory se po vertikálním vysunutí posunou k primárnímu monitoru, aby vytvořily souvislejší oblouk.
+- Koncept V2.2 umisťuje primární monitorový lift za zadní hranu P směrem ke středu a dvojice S/T liftů do technického kanálu mezi sousední desky; monitorové moduly tak neprocházejí půdorysem pracovních desek.
+- V2.2 rozšiřuje zadní hranu P a používá její šikmé boky jako společné hrany navazujících S/T desek podle vyznačeného půdorysu.
 - Cílová mezera mezi sousedními rámečky v poloze Work je 20–40 mm. Finální hodnota závisí na konkrétních monitorech, rámech, poloměru oblouku a výrobních tolerancích.
 - Spodní hrana vysunutého monitoru musí zůstat bezpečně nad deskami i při povoleném zpoždění os, brzdění, průhybu, vůlích a výrobních tolerancích.
 - Mechanická výška monitoru není jediným bezpečnostním opatřením; Workstation Coordinator současně hlídá relativní výšky P/S/T.
@@ -304,9 +306,9 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 - [x] Doplnit 2D kótovaný půdorys a parametrické kontrolní rozměry.
 - [x] Ověřit polohy židlí, prostor pro nohy, vstup a opuštění pracoviště v parametrickém půdorysu; fyzická uživatelská validace zůstává v M5.
 - [ ] Definovat polohu očí uživatele, doporučenou pozorovací vzdálenost a cílový monitorový oblouk.
-- [ ] Umístit P/S/T monitory podle zorného pole nezávisle na středech pracovních desek.
-- [ ] Stanovit cílové úhly natočení S/T monitorů a cílovou mezeru rámečků 20–40 mm.
-- [ ] Ověřit, že monitorový oblouk neomezuje pracovní hloubku 500–600 mm.
+- [x] Ve V2.2 umístit P/S/T monitory podle zorného pole nezávisle na středech pracovních desek a přesunout jejich lifty mimo půdorysy desek.
+- [x] Ve V2.2 stanovit cílové úhly natočení S/T monitorů a ověřit mezeru rámečků 20–40 mm.
+- [x] Ve V2.2 ověřit, že monitorový oblouk neomezuje pracovní hloubku 500–600 mm.
 - [ ] Ověřit viditelnost všech monitorů pro různé výšky uživatele.
 - [ ] Parametrizovat pracovní a parkovací polohu každého monitoru.
 
