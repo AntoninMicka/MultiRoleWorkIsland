@@ -24,6 +24,24 @@ Pracovní název projektu a repozitáře: **MultiRoleWorkIsland**.
 - Devět monitorů se parkuje pod pracovní vrstvu. Dvojice bočních monitorů sousedních pracovišť leží zády k sobě kolem technického kanálu.
 - Zadní zvýšené hrany pracovních desek mají bránit pádu předmětů při změně výšky.
 
+### Nezávislé monitorové moduly a ergonomický oblouk
+
+- Geometrie monitorů se neodvozuje přímo od středů desek P/S/T. Desky se navrhují podle dosahu, prostoru pro nohy a nezávislého výškového nastavení; monitory se v poloze Work skládají do kompaktního ergonomického oblouku kolem uživatele.
+- Každý z devíti monitorů je samostatný mechanický modul. Sousední monitory se mechanicky nespojují, nezamykají a nepřenášejí mezi sebou zatížení; společná pracovní poloha vzniká pouze koordinovaným řízením.
+- Každý monitorový modul zajišťuje vertikální výsun z parkovací kapsy, horizontální posun do pracovní polohy, natočení k uživateli, snímání rozhodujících poloh a bezpečný návrat do parkovací polohy.
+- Primární monitor může mít kratší nebo nulový horizontální posun. S/T monitory se po vertikálním vysunutí posunou k primárnímu monitoru, aby vytvořily souvislejší oblouk.
+- Cílová mezera mezi sousedními rámečky v poloze Work je 20–40 mm. Finální hodnota závisí na konkrétních monitorech, rámech, poloměru oblouku a výrobních tolerancích.
+- Spodní hrana vysunutého monitoru musí zůstat bezpečně nad deskami i při povoleném zpoždění os, brzdění, průhybu, vůlích a výrobních tolerancích.
+- Mechanická výška monitoru není jediným bezpečnostním opatřením; Workstation Coordinator současně hlídá relativní výšky P/S/T.
+
+Počáteční prototypové limity, které musí být později odvozeny z měření rychlosti, latence, přesnosti snímání a brzdné dráhy:
+
+```text
+FOLLOW_WARNING = 15 mm
+FOLLOW_LIMIT   = 30 mm
+FOLLOW_FAULT   = 50 mm
+```
+
 ### Výšky a režimy
 
 - Party výška: 700 mm.
@@ -61,6 +79,7 @@ Pracovní název projektu a repozitáře: **MultiRoleWorkIsland**.
 - Každá osa smí mít v jednom okamžiku právě jednoho vlastníka. Lokální a centrální koordinátor ji nesmějí ovládat současně.
 - Při party transformaci Central Coordinator dočasně převezme potřebné osy sousedních pracovišť.
 - Service je primárně lokální stav pracoviště; Party je sdílený stav řízený centrálně.
+- Devět monitorových modulů má samostatně evidované vlastnictví; Workstation Coordinator koordinuje jejich pohyb s lokálními osami P/S/T.
 
 ### Priorita řízení
 
@@ -86,6 +105,36 @@ Minimální referenční stavy:
 
 Přechody musí být explicitní procedury s předpodmínkami, kontrolou senzorů, časovými limity, možností bezpečného zastavení a diagnostickým důvodem odmítnutí.
 
+Každý monitorový modul eviduje minimálně:
+
+```text
+vertical_position
+horizontal_position
+yaw_position
+park_sensor
+work_sensor
+motion_state
+fault_state
+owner
+```
+
+Minimální stavový automat monitoru:
+
+```text
+PARKED
+RAISING
+SAFE_HEIGHT
+TRANSLATING_IN
+ROTATING_IN
+WORK
+ROTATING_OUT
+TRANSLATING_OUT
+LOWERING
+FAULT
+```
+
+Axis controller řídí každou desku samostatně, ale nesmí přijmout pohyb porušující aktivní bezpečnostní obálku monitoru.
+
 ## 4. Bezpečnostní invarianty
 
 - E-STOP, koncové spínače, ochrana proti sevření a základní bezpečnost nesmějí záviset na Raspberry Pi, GUI ani síťové službě.
@@ -96,6 +145,34 @@ Přechody musí být explicitní procedury s předpodmínkami, kontrolou senzor�
 - Před transformací se kontroluje přítomnost osob a předmětů, poloha monitorů, výšky dotčených desek a stav zámků.
 - Musí existovat definovaný bezpečný mezistav a postup obnovy po výpadku napájení, komunikace nebo senzoru.
 - Bezpečnostní analýza musí pokrýt sevření, střih, převrácení, kolizi os, pád desky, přetížení, uvolněný zámek, přerušený kabel a neočekávaný restart.
+- Horizontální posun monitoru je povolen pouze po potvrzení bezpečné vertikální polohy a nesmí vést přes desku mimo povolené výškové pásmo.
+- Při vysunutých a přisunutých monitorech koordinátor průběžně sleduje rozdíly výšek P/S/T. Překročení `FOLLOW_WARNING` zobrazí varování, překročení `FOLLOW_LIMIT` zastaví ostatní dotčené desky a překročení `FOLLOW_FAULT` vyvolá řízené zastavení a stav `FAULT`.
+- Porucha S/T nesmí vyvolat nekontrolovaný pohyb P ani přenos síly přes monitor do jiné desky nebo monitorového modulu.
+- Ztráta komunikace blokuje pokračování horizontálního posunu monitoru.
+- Party nebo servisní transformace není povolena bez potvrzeného `MONITOR_PARK` všech dotčených monitorů.
+
+### Bezpečné rozložení monitorů
+
+1. Zastavit samostatné pohyby dotčených P/S/T desek.
+2. Srovnat P/S/T do povoleného výškového pásma.
+3. Ověřit volný prostor a stav monitorových mechanismů.
+4. Vysunout P/S/T monitory do bezpečné vertikální výšky.
+5. Potvrdit koncové nebo absolutní polohy Z.
+6. Horizontálně přisunout S/T monitory k primárnímu monitoru.
+7. Natočit S/T monitory směrem k uživateli.
+8. Ověřit pracovní a bezpečnou polohu všech monitorů.
+9. Povolit koordinované výškové polohování pracovních desek.
+
+### Bezpečné parkování monitorů
+
+1. Zastavit samostatné pohyby dotčených P/S/T desek.
+2. Srovnat desky do bezpečného výškového pásma.
+3. Natočit S/T monitory do parkovací orientace.
+4. Horizontálně odsunout S/T monitory od primárního monitoru.
+5. Ověřit zasunutí horizontálních mechanismů.
+6. Spustit monitory do parkovacích kapes.
+7. Potvrdit `MONITOR_PARK` všech dotčených monitorů.
+8. Teprve potom povolit party nebo servisní transformaci.
 
 ## 5. Softwarová architektura
 
@@ -104,6 +181,7 @@ Software se dělí na tři nezávislé roviny spojené scénickým enginem:
 ### Mechanical plane
 
 - řízení os, monitorových liftů, party mechanismů a zámků,
+- nezávislé řízení vertikální polohy, horizontálního posunu a natočení každého monitorového modulu,
 - snímání poloh, proudů/zatížení, koncových spínačů a bezpečnostních stavů,
 - vlastnictví os, stavové automaty, interlocky, diagnostika a audit událostí,
 - lokální realtime řízení v MCU/PLC; vyšší koordinace nad ním.
@@ -142,6 +220,7 @@ Software se dělí na tři nezávislé roviny spojené scénickým enginem:
 ## 6. Kabeláž, data a technické zázemí
 
 - Každá nezávisle pohyblivá část má vlastní kabelový svazek vedený energetickým řetězem.
+- Každý monitorový modul potřebuje energetický řetěz a odlehčení tahu pro kombinovaný vertikální a horizontální pohyb i natočení.
 - Nevézt kabel přímo mezi dvěma nezávisle pohyblivými deskami.
 - Ethernet je preferovaná komunikační páteř.
 - Video řešit krátkým lokálním DP/HDMI, kabelem určeným pro trvalý ohyb nebo AV-over-IP; běžný HDMI kabel není vhodný pro opakované ostré ohýbání.
@@ -220,12 +299,18 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 - [x] Nahradit pravidelný centrální šestiúhelník trojnásobně symetrickým nepravidelným obrysem.
 - [x] Parametrizovat čelo 800 mm a pracovní hloubku 500–600 mm, výchozí 550 mm.
 - [x] Odvodit P/S/T desky z ergonomických hran a odstranit všechny půdorysné překryvy.
-- [x] Natočit S/T monitory k uživateli; ověřit zorné úhly, vzdálenost a vzájemné zakrytí.
+- [x] Ve statické V2.1 studii natočit S/T monitory k uživateli a ověřit základní zorné úhly, vzdálenost a vzájemné zakrytí.
 - [x] Dopočítat tvar a rozměry S/T místo použití pevné šířky 600 mm.
 - [x] Doplnit 2D kótovaný půdorys a parametrické kontrolní rozměry.
 - [x] Ověřit polohy židlí, prostor pro nohy, vstup a opuštění pracoviště v parametrickém půdorysu; fyzická uživatelská validace zůstává v M5.
+- [ ] Definovat polohu očí uživatele, doporučenou pozorovací vzdálenost a cílový monitorový oblouk.
+- [ ] Umístit P/S/T monitory podle zorného pole nezávisle na středech pracovních desek.
+- [ ] Stanovit cílové úhly natočení S/T monitorů a cílovou mezeru rámečků 20–40 mm.
+- [ ] Ověřit, že monitorový oblouk neomezuje pracovní hloubku 500–600 mm.
+- [ ] Ověřit viditelnost všech monitorů pro různé výšky uživatele.
+- [ ] Parametrizovat pracovní a parkovací polohu každého monitoru.
 
-**Hotovo, když:** žádné dvě pracovní desky se neprotínají, každý uživatel má 500–600 mm použitelné hloubky a všechny tři monitory jsou ergonomicky orientované.
+**Hotovo, když:** žádné dvě pracovní desky se neprotínají, každý uživatel má 500–600 mm použitelné hloubky a tři nezávislé monitory vytvoří ověřený ergonomický oblouk s definovanými mezerami pro celý cílový rozsah uživatelů.
 
 ### M2 — Souvislá party vrstva a kinematika
 
@@ -236,8 +321,16 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 - [ ] Navrhnout panty, vedení a ruční nebo motorické přestavení.
 - [ ] Umístit mechanické zámky a dvojici potvrzení POSITION/LOCK.
 - [ ] Prověřit, zda se celý party povrch bezpečně zarovná na 700 mm.
+- [ ] Navrhnout samostatný vertikální lift každého monitoru.
+- [ ] Navrhnout horizontální kolejnicový nebo teleskopický posun S/T monitorů.
+- [ ] Porovnat motorické a pasivně vedené natočení monitoru.
+- [ ] Vytvořit přesné pohybové obálky vertikálního výsunu, horizontálního posunu a natočení monitorů.
+- [ ] Ověřit kolize monitorů, desek, kabelů, party vrstvy a sousedních mechanismů.
+- [ ] Navrhnout energetický řetěz pro kombinovaný vertikální a horizontální pohyb monitoru.
+- [ ] Ověřit přístupnost monitorových mechanismů v režimu Service.
+- [ ] Navrhnout mechanické dorazy, nouzové ruční zasunutí a ochranu proti pádu monitoru.
 
-**Hotovo, když:** CAD přehraje bezkolizní posloupnost Work ↔ Party a horní vrstva vytvoří souvislý použitelný povrch.
+**Hotovo, když:** CAD přehraje bezkolizní posloupnost Work ↔ Party, všech devět monitorů bezpečně projde mezi `PARKED` a `WORK` a horní vrstva vytvoří souvislý použitelný povrch.
 
 ### M3 — Konstrukce, zdvihy a servis
 
@@ -267,11 +360,25 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 - [ ] Integrovat P/S/T, tři monitorové lifty a lokální Workstation Coordinator.
 - [ ] Implementovat exkluzivní vlastnictví os a volitelný `follow primary`.
 - [ ] Ověřit, že porucha S/T neblokuje bezpečný pohyb P.
+- [ ] Implementovat monitorové stavové automaty a koordinované sekvence rozložení/parkování.
+- [ ] Implementovat a změřenými daty kalibrovat `FOLLOW_WARNING`, `FOLLOW_LIMIT` a `FOLLOW_FAULT`.
+- [ ] Ověřit blokování horizontálního posunu bez potvrzené bezpečné výšky a při ztrátě komunikace.
 - [ ] Implementovat lokální Work a Service procedury.
 - [ ] Vyrobit kabelové svazky a energetické řetězy pro každou pohyblivou část.
 - [ ] Ověřit ergonomii na uživatelích různých výšek.
 
-**Hotovo, když:** stanice pracuje samostatně, bezpečně přejde Work ↔ Service a poskytuje úplnou diagnostiku.
+**Hotovo, když:** stanice pracuje samostatně, bezpečně přejde Work ↔ Service, každý monitor lze samostatně zaparkovat a diagnostikovat a porucha jedné osy nepřenese sílu do sousedního modulu.
+
+#### Akceptační kritéria monitorového subsystému
+
+- Žádný monitor není mechanicky spojen se sousedním monitorem.
+- Každý monitor lze samostatně zaparkovat a diagnostikovat.
+- Pracovní sestava vytváří ergonomický oblouk s cílovými mezerami 20–40 mm.
+- Horizontální posun nemůže začít v nebezpečné výšce ani pokračovat po ztrátě komunikace.
+- Povolené zpoždění P/S/T nevede ke kolizi s monitorem.
+- Porucha jedné osy nevyvolá přenos síly do sousední desky nebo monitoru.
+- Systém bezpečně zastaví při překročení povoleného rozdílu výšek.
+- Party transformace není povolena bez potvrzeného `MONITOR_PARK`.
 
 ### M6 — Sdílené rameno a party mechanismus
 
@@ -332,31 +439,33 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 ## 9. Testovací strategie
 
 - **Unit tests:** stavové automaty, geometrické výpočty, limity, parser konfigurace, scene resolver.
-- **Property tests:** zakázané přechody, exkluzivita vlastníka osy, invarianty zámků a monitorů.
-- **CAD tests:** nulové průniky P/S/T, minimální mezery, obálky pohybu, rozměry party povrchu.
+- **Property tests:** zakázané přechody, exkluzivita vlastníka osy, invarianty zámků a monitorů, zákaz horizontálního posunu mimo `SAFE_HEIGHT` a blokování Party bez `MONITOR_PARK`.
+- **CAD tests:** nulové průniky P/S/T, monitorový oblouk a mezery rámečků, přesné monitorové pohybové obálky, minimální mezery a rozměry party povrchu.
 - **Simulation:** virtuální axis controllers, senzory, latence, poruchy a restart uprostřed procedury.
 - **Hardware-in-the-loop:** reálný MCU/PLC, bezpečnostní I/O a simulované pohony před připojením nábytku.
-- **Fault injection:** odpojený senzor, zaseknutý zámek, ztráta Ethernetu, nesouhlas poloh, přetížení, výpadek napájení.
+- **Fault injection:** odpojený senzor, zaseknutý zámek, ztráta Ethernetu během horizontálního posunu monitoru, nesouhlas poloh, překročení rozdílu výšek, přetížení a výpadek napájení.
 - **Cycle tests:** opakování Work/Party/Service s průběžným měřením vůlí, driftu a teplot.
 - **Ergonomie:** dosah, zorné úhly, prostor nohou, přístupnost, odlesky a dlouhodobé používání.
 
 ## 10. Nejbližší backlog
 
-1. Zařadit `sector_generator_v2.py`, `run_freecad.sh` a tuto roadmapu do repozitáře.
-2. Přesunout generátor do `cad/generators/` a upravit výchozí cestu runneru, nebo ponechat kompatibilní symlink/wrapper.
-3. Vytvořit V2.1 od ergonomických parametrů 800/550 mm.
-4. Odstranit překryvy P/S/T a přidat automatický collision report.
-5. Opravit orientaci S/T monitorů směrem k uživateli.
-6. Nahradit pravidelný centrální šestiúhelník nepravidelnou trojnásobně symetrickou geometrií.
-7. Vymodelovat kompletní souvislou party vrstvu nad pracovní vrstvou.
-8. Změřit potřebnou šířku technického kanálu podle reálných monitorových liftů a kabelových řetězů.
-9. Založit softwarový simulátor stavových automatů dříve, než se vyberou finální pohony.
-10. Sepsat první tabulku I/O, stavů, interlocků a vlastnictví os.
+1. Definovat polohu očí, doporučenou pozorovací vzdálenost, poloměr monitorového oblouku a cílové úhly S/T.
+2. Navrhnout pracovní sestavu s mezerami rámečků 20–40 mm a ověřit ji pro různé výšky uživatele.
+3. Parametrizovat pracovní a parkovací polohu všech devíti nezávislých monitorových modulů.
+4. Navrhnout vertikální lift, horizontální posun a způsob natočení monitorových modulů.
+5. Vytvořit přesné pohybové obálky monitorů a ověřit kolize s deskami, kabely a party vrstvou.
+6. Vymodelovat kompletní souvislou party vrstvu nad pracovní vrstvou.
+7. Změřit potřebnou šířku technického kanálu podle reálných monitorových liftů, horizontálních posunů a kabelových řetězů.
+8. Založit softwarový simulátor stavových automatů dříve, než se vyberou finální pohony.
+9. Sepsat první tabulku I/O, stavů, interlocků a vlastnictví os včetně monitorových modulů.
 
 ## 11. Otevřené otázky
 
 - Přesný tvar a rozměry P/S/T po ergonomickém odvození.
+- Poloha očí pro cílový rozsah uživatelů, poloměr monitorového oblouku, pozorovací vzdálenost a finální mezera rámečků.
 - Skutečná šířka technického kanálu a uspořádání dvojice monitorových liftů.
+- Konstrukce vertikálního liftu a horizontálního posunu monitoru; motorické versus pasivně vedené natočení.
+- Bezpečná výška spodní hrany monitorů a konečné hodnoty `FOLLOW_WARNING`, `FOLLOW_LIMIT` a `FOLLOW_FAULT` podle naměřené dynamiky.
 - Způsob uložení a pohonu ramenních party desek a centrálního krytu.
 - Ruční, asistované nebo plně motorické party transformace.
 - Výběr zdvihových sloupů, jejich počet na desku, rychlost, hlučnost a certifikace.
