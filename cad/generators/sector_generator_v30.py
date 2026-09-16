@@ -83,7 +83,7 @@ DESK_CORNER_RADIUS = 90.0
 
 # Nominal modes
 WORK_HEIGHT = 750.0
-PARTY_HEIGHT = 700.0
+PARTY_HEIGHT = Geometry.PARTY_SURFACE_HEIGHT
 SERVICE_HEIGHT = 1200.0  # provisional access pose
 
 # Physical/software lift limits retained from V1
@@ -111,7 +111,7 @@ FLOOR_RAIL_HEIGHT = 55.0
 ARM_PARTY_COVER_LENGTH = 1220.0
 ARM_PARTY_COVER_START = HUB_RADIUS + 120.0
 ARM_PARTY_COVER_WIDTH = SHAFT_GAP + 80.0
-PARTY_COVER_THICKNESS = 40.0
+PARTY_COVER_THICKNESS = Geometry.PARTY_MODULE_THICKNESS
 PARTY_SUPPORT_HEIGHT = PARTY_HEIGHT - PARTY_COVER_THICKNESS
 PARTITION_HEIGHT = 720.0
 PARTITION_THICKNESS = 40.0
@@ -126,7 +126,7 @@ MONITOR_BEZEL = 18.0
 MONITOR_BOTTOM_GAP = 95.0
 MONITOR_PARK_DROP = 450.0
 MONITOR_VIEW_RISE = 900.0
-MONITOR_LIFT_DIA = 90.0
+MONITOR_LIFT_DIA = Geometry.MONITOR_LIFT_RADIUS * 2.0
 
 # Visual / export options
 CREATE_STEP_EXPORTS = True
@@ -767,6 +767,8 @@ def write_design_reports(cad_collisions):
             "user_edge_width": Geometry.USER_EDGE_WIDTH,
             "usable_work_depth": Geometry.WORK_DEPTH,
             "technical_channel_width": Geometry.TECH_CHANNEL_WIDTH,
+            "side_desk_length": Geometry.SIDE_DESK_LENGTH,
+            "side_desk_width": Geometry.SIDE_DESK_WIDTH,
             "side_lift_channel_edge_clearance": side_lift_channel_clearance,
             "central_user_edge": Geometry.CENTRAL_USER_EDGE,
             "primary_rear_edge_width": Geometry.MONITOR_EDGE_WIDTH,

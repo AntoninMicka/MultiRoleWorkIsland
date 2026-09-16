@@ -3,27 +3,27 @@
 <rect width="1000" height="1000" fill="#fafafa"/>
 <text x="500" y="35" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#1d2730">V3.0 party surface — top 700 mm</text>
 <g fill="none" stroke="#94a0aa" stroke-width="1.2" stroke-dasharray="5 4">
-<polygon id="reference-desk-AP" points="640.80,621.00 728.80,588.00 728.80,412.00 640.80,379.00"/>
-<polygon id="reference-desk-AS" points="640.80,379.00 623.88,351.43 733.88,160.90 838.80,221.47 728.80,412.00"/>
-<polygon id="reference-desk-AT" points="640.80,621.00 623.88,648.57 733.88,839.10 838.80,778.53 728.80,588.00"/>
-<polygon id="reference-desk-BP" points="534.39,317.56 461.81,257.85 309.39,345.85 324.81,438.56"/>
-<polygon id="reference-desk-BS" points="324.81,438.56 309.39,467.00 89.39,467.00 89.39,345.85 309.39,345.85"/>
-<polygon id="reference-desk-BT" points="534.39,317.56 566.73,318.43 676.73,127.90 571.81,67.33 461.81,257.85"/>
-<polygon id="reference-desk-CP" points="324.81,561.44 309.39,654.15 461.81,742.15 534.39,682.44"/>
-<polygon id="reference-desk-CS" points="534.39,682.44 566.73,681.57 676.73,872.10 571.81,932.67 461.81,742.15"/>
-<polygon id="reference-desk-CT" points="324.81,561.44 309.39,533.00 89.39,533.00 89.39,654.15 309.39,654.15"/>
+<polygon id="reference-desk-AP" points="602.53,611.58 690.53,588.00 690.53,412.00 602.53,388.42"/>
+<polygon id="reference-desk-AS" points="602.53,388.42 712.53,197.89 800.53,221.47 690.53,412.00"/>
+<polygon id="reference-desk-AT" points="602.53,611.58 712.53,802.11 800.53,778.53 690.53,588.00"/>
+<polygon id="reference-desk-BP" points="545.37,355.42 480.95,291.00 328.53,379.00 352.11,467.00"/>
+<polygon id="reference-desk-BS" points="352.11,467.00 132.11,467.00 108.53,379.00 328.53,379.00"/>
+<polygon id="reference-desk-BT" points="545.37,355.42 655.37,164.89 590.95,100.47 480.95,291.00"/>
+<polygon id="reference-desk-CP" points="352.11,533.00 328.53,621.00 480.95,709.00 545.37,644.58"/>
+<polygon id="reference-desk-CS" points="545.37,644.58 655.37,835.11 590.95,899.53 480.95,709.00"/>
+<polygon id="reference-desk-CT" points="352.11,533.00 132.11,533.00 108.53,621.00 328.53,621.00"/>
 </g>
 <g fill="#e8bd45" fill-opacity="0.82" stroke="#25313b" stroke-width="2">
-<polygon id="central_top" points="309.39,654.15 461.81,742.15 728.80,588.00 728.80,412.00 461.81,257.85 309.39,345.85"/>
-<polygon id="party_arm_1" points="728.80,412.00 838.80,221.47 571.81,67.33 461.81,257.85"/>
-<polygon id="party_arm_2" points="309.39,345.85 89.39,345.85 89.39,654.15 309.39,654.15"/>
-<polygon id="party_arm_3" points="461.81,742.15 571.81,932.67 838.80,778.53 728.80,588.00"/>
+<polygon id="central_top" points="328.53,621.00 480.95,709.00 690.53,588.00 690.53,412.00 480.95,291.00 328.53,379.00"/>
+<polygon id="party_arm_1" points="690.53,412.00 800.53,221.47 590.95,100.47 480.95,291.00"/>
+<polygon id="party_arm_2" points="328.53,379.00 108.53,379.00 108.53,621.00 328.53,621.00"/>
+<polygon id="party_arm_3" points="480.95,709.00 590.95,899.53 800.53,778.53 690.53,588.00"/>
 </g>
 <g font-family="sans-serif" font-size="14" fill="#1d2730">
 <text x="500.00" y="500.00" text-anchor="middle">CENTRAL TOP</text>
-<text x="650.31" y="239.66" text-anchor="middle">PARTY ARM 1</text>
-<text x="199.39" y="500.00" text-anchor="middle">PARTY ARM 2</text>
-<text x="650.31" y="760.34" text-anchor="middle">PARTY ARM 3</text>
+<text x="640.74" y="256.24" text-anchor="middle">PARTY ARM 1</text>
+<text x="218.53" y="500.00" text-anchor="middle">PARTY ARM 2</text>
+<text x="640.74" y="743.76" text-anchor="middle">PARTY ARM 3</text>
 <text x="500" y="970" text-anchor="middle">Dashed outline: covered V2.3 worktops · solid lines: module seams</text>
 </g>
 </svg>

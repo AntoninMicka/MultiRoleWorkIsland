@@ -1,0 +1,38 @@
+# MultiRoleWorkIsland V3.0 — editable geometry parameters
+# Units are millimetres. Derived relationships are defined in geometry_v30.py.
+
+[geometry]
+# Hloubka P/S/T [mm]
+primary_depth = 400
+# Technologický kanál [mm]
+technical_channel_width = 300
+# Délka S/T [mm]
+side_desk_length = 1000
+# Čelní hrana P [mm]
+user_edge_width = 800
+# Odstup uživatele [mm]
+user_clearance = 550
+# P monitor – poloměr [mm]
+primary_monitor_radius = 400
+# S/T monitor Work – poloměr [mm]
+side_monitor_radius = 750
+# S/T monitor Work – od osy [mm]
+side_monitor_offset = 120
+# S/T lift – poloměr [mm]
+side_lift_radius = 780
+# S/T lift – od osy [mm]
+side_lift_offset = 85
+# Šířka P monitoru [mm]
+primary_monitor_width = 650
+# Šířka S/T monitoru [mm]
+side_monitor_width = 560
+# Tloušťka monitoru [mm]
+monitor_body_thickness = 38
+# Průměr liftu [mm]
+monitor_lift_diameter = 90
+# Rezerva lift–deska [mm]
+monitor_desk_clearance = 20
+# Výška Party [mm]
+party_surface_height = 700
+# Tloušťka Party [mm]
+party_module_thickness = 40

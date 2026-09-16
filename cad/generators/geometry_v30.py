@@ -9,61 +9,82 @@ from __future__ import division
 
 import math
 
+try:
+    from . import design_parameters as DesignParameters
+except ImportError:  # Direct execution from the FreeCAD generator directory.
+    import design_parameters as DesignParameters
+
 
 STATIONS = (("A", 0.0), ("B", 120.0), ("C", 240.0))
 
-# Primary desk: the user-facing edge and usable monitor-to-user depth are the
-# two controlling dimensions required by M1.
-USER_EDGE_WIDTH = 800.0
-WORK_DEPTH = 400.0
-MONITOR_EDGE_WIDTH = 1100.0
-PRIMARY_INNER_RADIUS = 640.0
-
-# Shared arm envelope.  Each side desk stays on its side of the technical
-# channel.  Its diagonal inner edge is derived from the primary/user zone.
+# Fixed study references. Editable values are loaded from
+# config/design_parameters.toml through apply_parameters() below.
 ARM_OUTER_RADIUS = 1950.0
 ARM_HALF_WIDTH = 800.0
-TECH_CHANNEL_WIDTH = 300.0
-SIDE_DESK_LENGTH = 1000.0
-
-# User and display reference positions used to aim all monitors.  The primary
-# lift sits behind the rear P edge; paired side lifts sit inside the 300 mm
-# channel rather than passing through their S/T desk surfaces.
-USER_RADIUS = PRIMARY_INNER_RADIUS + WORK_DEPTH + 450.0
-PRIMARY_MONITOR_RADIUS = 400.0
-SIDE_MONITOR_RADIUS = 760.0
-SIDE_MONITOR_CHANNEL_OFFSET = 120.0
-# The lift axis remains inside the narrower channel while the monitor body
-# translates diagonally into its ergonomic WORK pose.
-SIDE_LIFT_RADIUS = 780.0
-SIDE_LIFT_CHANNEL_OFFSET = 95.0
-PRIMARY_MONITOR_WIDTH = 650.0
-SIDE_MONITOR_WIDTH = 560.0
-MONITOR_BODY_THICKNESS = 38.0
-MONITOR_LIFT_RADIUS = 45.0
-MONITOR_DESK_CLEARANCE = 20.0
-
-# Ergonomic reference zones.  They are design checks, not a substitute for a
-# physical mock-up with users of different body sizes.
 CHAIR_WIDTH = 470.0
 CHAIR_DEPTH = 420.0
-# Keep the 150 mm rear support band used by V2.3. With the shallower primary
-# top this leaves a 250 mm reference knee/leg zone for the next ergonomic pass.
 PRIMARY_REAR_SUPPORT_ZONE_DEPTH = 150.0
-PRIMARY_LEGROOM_DEPTH = WORK_DEPTH - PRIMARY_REAR_SUPPORT_ZONE_DEPTH
 PRIMARY_LEGROOM_WIDTH = 600.0
-PRIMARY_COLUMN_RADIUS = PRIMARY_INNER_RADIUS + 70.0
 LIFT_COLUMN_OUTER_RADIUS = 57.5
-ENTRY_CORRIDOR_WIDTH = USER_EDGE_WIDTH
-ENTRY_CORRIDOR_OUTER_RADIUS = USER_RADIUS + 700.0
-
-# The central V3.0 module follows the front corners of all three P desks. Its
-# three user-facing edges stay 800 mm wide; alternate edges are exact seams to
-# the three arm modules.
 CENTRAL_PARTY_RADIUS = 760.0  # retained historical reference, not V3.0 extent
 CENTRAL_USER_EDGE = 800.0
-PARTY_MODULE_THICKNESS = 40.0
-PARTY_SURFACE_HEIGHT = 700.0
+
+
+def apply_parameters(parameters):
+    """Apply validated independent inputs and recalculate every dependency."""
+    values = DesignParameters.normalize_parameters(parameters)
+    errors = DesignParameters.validate_parameters(values)
+    if errors:
+        raise ValueError("Invalid design parameters:\n- " + "\n- ".join(errors))
+
+    global PARAMETERS
+    global USER_EDGE_WIDTH, WORK_DEPTH, MONITOR_EDGE_WIDTH, PRIMARY_INNER_RADIUS
+    global TECH_CHANNEL_WIDTH, SIDE_DESK_LENGTH, SIDE_DESK_WIDTH, USER_RADIUS
+    global PRIMARY_MONITOR_RADIUS, SIDE_MONITOR_RADIUS, SIDE_MONITOR_CHANNEL_OFFSET
+    global SIDE_LIFT_RADIUS, SIDE_LIFT_CHANNEL_OFFSET
+    global PRIMARY_MONITOR_WIDTH, SIDE_MONITOR_WIDTH, MONITOR_BODY_THICKNESS
+    global MONITOR_LIFT_RADIUS, MONITOR_DESK_CLEARANCE
+    global PRIMARY_LEGROOM_DEPTH, PRIMARY_COLUMN_RADIUS
+    global ENTRY_CORRIDOR_WIDTH, ENTRY_CORRIDOR_OUTER_RADIUS
+    global PARTY_MODULE_THICKNESS, PARTY_SURFACE_HEIGHT
+
+    PARAMETERS = dict(values)
+    USER_EDGE_WIDTH = values["user_edge_width"]
+    WORK_DEPTH = values["primary_depth"]
+    TECH_CHANNEL_WIDTH = values["technical_channel_width"]
+    SIDE_DESK_LENGTH = values["side_desk_length"]
+    SIDE_DESK_WIDTH = WORK_DEPTH
+    arm_sine = math.sin(math.radians(60.0))
+    arm_cosine = math.cos(math.radians(60.0))
+    primary_outer_radius = (
+        TECH_CHANNEL_WIDTH / 2.0 + WORK_DEPTH + USER_EDGE_WIDTH / 4.0
+    ) / arm_sine
+    PRIMARY_INNER_RADIUS = primary_outer_radius - WORK_DEPTH
+    rear_half_width = (
+        arm_sine * PRIMARY_INNER_RADIUS - TECH_CHANNEL_WIDTH / 2.0
+    ) / arm_cosine
+    MONITOR_EDGE_WIDTH = 2.0 * rear_half_width
+    USER_RADIUS = PRIMARY_INNER_RADIUS + WORK_DEPTH + values["user_clearance"]
+    PRIMARY_MONITOR_RADIUS = values["primary_monitor_radius"]
+    SIDE_MONITOR_RADIUS = values["side_monitor_radius"]
+    SIDE_MONITOR_CHANNEL_OFFSET = values["side_monitor_offset"]
+    SIDE_LIFT_RADIUS = values["side_lift_radius"]
+    SIDE_LIFT_CHANNEL_OFFSET = values["side_lift_offset"]
+    PRIMARY_MONITOR_WIDTH = values["primary_monitor_width"]
+    SIDE_MONITOR_WIDTH = values["side_monitor_width"]
+    MONITOR_BODY_THICKNESS = values["monitor_body_thickness"]
+    MONITOR_LIFT_RADIUS = values["monitor_lift_diameter"] / 2.0
+    MONITOR_DESK_CLEARANCE = values["monitor_desk_clearance"]
+    PRIMARY_LEGROOM_DEPTH = WORK_DEPTH - PRIMARY_REAR_SUPPORT_ZONE_DEPTH
+    PRIMARY_COLUMN_RADIUS = PRIMARY_INNER_RADIUS + 70.0
+    ENTRY_CORRIDOR_WIDTH = USER_EDGE_WIDTH
+    ENTRY_CORRIDOR_OUTER_RADIUS = USER_RADIUS + 700.0
+    PARTY_MODULE_THICKNESS = values["party_module_thickness"]
+    PARTY_SURFACE_HEIGHT = values["party_surface_height"]
+    return dict(values)
+
+
+apply_parameters(DesignParameters.load_parameters())
 
 
 def _radians(angle_deg):
@@ -113,27 +134,25 @@ def primary_polygon(station_angle):
 def _side_lane(kind):
     channel_half = TECH_CHANNEL_WIDTH / 2.0
     if kind == "S":
-        return (60.0, -channel_half, -ARM_HALF_WIDTH)
+        return (60.0, -channel_half, -(channel_half + SIDE_DESK_WIDTH))
     if kind == "T":
-        return (-60.0, channel_half, ARM_HALF_WIDTH)
+        return (-60.0, channel_half, channel_half + SIDE_DESK_WIDTH)
     raise ValueError("Side desk kind must be S or T: %s" % kind)
 
 
 def side_polygon(kind, station_angle):
-    """Return a side desk whose front and rear edges are exactly parallel."""
-    arm_delta, channel_edge, _outer_edge = _side_lane(kind)
+    """Extrude the complete P side so P and S/T join without a transition."""
+    arm_delta, _channel_edge, _outer_edge = _side_lane(kind)
     arm_angle = station_angle + arm_delta
     primary = primary_polygon(station_angle)
     if kind == "S":
         rear_start, front_start = primary[3], primary[2]
     else:
         rear_start, front_start = primary[0], primary[1]
-    front_local = rotate_point(front_start, -arm_angle)
-    channel_start = local_to_world(front_local[0], channel_edge, arm_angle)
     extension = local_to_world(SIDE_DESK_LENGTH, 0.0, arm_angle)
-    rear_end = (channel_start[0] + extension[0], channel_start[1] + extension[1])
+    rear_end = (rear_start[0] + extension[0], rear_start[1] + extension[1])
     front_end = (front_start[0] + extension[0], front_start[1] + extension[1])
-    return (rear_start, channel_start, rear_end, front_end, front_start)
+    return (rear_start, rear_end, front_end, front_start)
 
 
 def cross_product(vector_a, vector_b):
@@ -151,7 +170,7 @@ def desk_front_rear_edges(name, polygon):
     """Return the user-facing and rear edge pair for a P/S/T desk polygon."""
     if name[-1] == "P":
         return ((polygon[1], polygon[2]), (polygon[0], polygon[3]))
-    return ((polygon[-1], polygon[-2]), (polygon[1], polygon[2]))
+    return ((polygon[3], polygon[2]), (polygon[0], polygon[1]))
 
 
 def nonparallel_desk_edges():
@@ -170,7 +189,7 @@ def technical_channel_edge_failures(tolerance=1e-7):
         for kind in ("S", "T"):
             arm_delta, channel_edge, _outer_edge = _side_lane(kind)
             polygon = side_polygon(kind, station_angle)
-            for point in polygon[1:3]:
+            for point in polygon[0:2]:
                 local = rotate_point(point, -(station_angle + arm_delta))
                 if abs(local[1] - channel_edge) > tolerance:
                     failures.append(station + kind)

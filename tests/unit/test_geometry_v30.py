@@ -27,6 +27,35 @@ def test_front_and_rear_edges_are_parallel_on_every_desk():
     assert geometry.nonparallel_desk_edges() == []
 
 
+def test_all_worktops_share_the_configured_front_to_rear_depth():
+    assert geometry.WORK_DEPTH == geometry.SIDE_DESK_WIDTH == 400.0
+    for _station, station_angle in geometry.STATIONS:
+        for kind in ("S", "T"):
+            front, rear = geometry.desk_front_rear_edges(
+                kind, geometry.side_polygon(kind, station_angle)
+            )
+            arm_delta, _channel_edge, _outer_edge = geometry._side_lane(kind)
+            front_local = geometry.rotate_point(front[0], -(station_angle + arm_delta))
+            rear_local = geometry.rotate_point(rear[0], -(station_angle + arm_delta))
+            assert math.isclose(
+                abs(front_local[1] - rear_local[1]),
+                geometry.WORK_DEPTH,
+                abs_tol=1e-9,
+            )
+
+
+def test_side_desks_continue_primary_edges_without_transition_segments():
+    for _station, station_angle in geometry.STATIONS:
+        primary = geometry.primary_polygon(station_angle)
+        secondary = geometry.side_polygon("S", station_angle)
+        tertiary = geometry.side_polygon("T", station_angle)
+        assert secondary[0] == primary[3]
+        assert secondary[3] == primary[2]
+        assert tertiary[0] == primary[0]
+        assert tertiary[3] == primary[1]
+        assert len(secondary) == len(tertiary) == 4
+
+
 def test_side_desks_bound_a_300_mm_technical_channel():
     assert geometry.TECH_CHANNEL_WIDTH == 300.0
     assert geometry.technical_channel_edge_failures() == []
@@ -34,7 +63,7 @@ def test_side_desks_bound_a_300_mm_technical_channel():
         for kind in ("S", "T"):
             arm_delta, channel_edge, _outer_edge = geometry._side_lane(kind)
             polygon = geometry.side_polygon(kind, station_angle)
-            for point in polygon[1:3]:
+            for point in polygon[0:2]:
                 local = geometry.rotate_point(point, -(station_angle + arm_delta))
                 assert math.isclose(local[1], channel_edge, abs_tol=1e-9)
 

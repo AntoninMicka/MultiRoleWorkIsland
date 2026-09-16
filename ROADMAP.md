@@ -18,6 +18,7 @@ Pracovní název projektu a repozitáře: **MultiRoleWorkIsland**.
 - Technický kanál mezi sousedními plochami na rameni má ve V3.0 pracovní hodnotu 300 mm; musí se ověřit podle reálných monitorových liftů, konstrukce a kabelových řetězů.
 - Čelní hrana pracoviště směrem k uživateli má mít přibližně 800 mm.
 - V3.0 zmenšuje radiální hloubku primární pracovní desky na 400 mm. Původní studie V2.1–V2.3 ověřovala 500–600 mm s výchozí hodnotou 550 mm; při zachování 150mm zadního nosného pásu zbývá 250mm referenční prostor pro nohy, takže ergonomii kratší desky je nutné znovu ověřit fyzickou maketou.
+- V3.0 používá společnou 400mm vzdálenost mezi hlavní přední a zadní hranou všech P/S/T desek. S/T zůstávají dlouhé 1000 mm a vznikají přímým vysunutím celé boční hrany P, takže napojení je plynulé bez přechodových segmentů a zářezů.
 - P/S/T desky se nesmějí půdorysně překrývat. Jejich tvar se má odvodit od polohy uživatele, monitoru, ergonomické hloubky a hran sousedních pracovišť, nikoliv z pevných obdélníků.
 - Centrální party útvar má trojnásobnou symetrii, ale nemá být pravidelným šestiúhelníkem. Tři hlavní hrany orientované k uživatelům mají přibližně 800 mm; zbývající hrany vzniknou z návaznosti desek.
 - Primární monitory tvoří trojúhelník uprostřed. Sekundární a terciární monitor každého pracoviště se orientují k jeho uživateli; nemají být pouze kolmé k ose ramene.
@@ -33,7 +34,8 @@ Pracovní název projektu a repozitáře: **MultiRoleWorkIsland**.
 - Koncept V2.2 umisťuje primární monitorový lift za zadní hranu P směrem ke středu a dvojice S/T liftů do technického kanálu mezi sousední desky; monitorové moduly tak neprocházejí půdorysem pracovních desek.
 - V2.2 rozšiřuje zadní hranu P a používá její šikmé boky jako společné hrany navazujících S/T desek podle vyznačeného půdorysu.
 - V2.3 uzavírá půdorys pracovních desek: přední a zadní hrana každé P/S/T desky jsou rovnoběžné; tato podmínka je automaticky kontrolovaný geometrický invariant.
-- V3.0 zužuje technický kanál na 300 mm. Osy dvojice 90mm monitorových liftů leží 95 mm od osy kanálu, takže každému zbývá 10mm boční rezerva; S/T monitor se z osy liftu přesune přibližně o 32 mm do bezkolizní pracovní polohy.
+- V3.0 zužuje technický kanál na 300 mm. Osy dvojice 90mm monitorových liftů leží 85 mm od osy kanálu, takže každému zbývá požadovaná 20mm rezerva k desce; S/T monitor se z osy liftu přesune do bezkolizní pracovní polohy.
+- Parametry V3.0 se načítají z `config/design_parameters.toml`. Editor spuštěný přes `./run.sh --configure` zobrazuje živý Work/Party SVG náhled, nezávislé vstupy, odvozené vazby a geometrické kontroly; uložené hodnoty používá přímo FreeCAD generátor.
 - Cílová mezera mezi sousedními rámečky v poloze Work je 20–40 mm. Finální hodnota závisí na konkrétních monitorech, rámech, poloměru oblouku a výrobních tolerancích.
 - Spodní hrana vysunutého monitoru musí zůstat bezpečně nad deskami i při povoleném zpoždění os, brzdění, průhybu, vůlích a výrobních tolerancích.
 - Mechanická výška monitoru není jediným bezpečnostním opatřením; Workstation Coordinator současně hlídá relativní výšky P/S/T.

@@ -11,6 +11,7 @@ Run the MultiRoleWorkIsland Python generator through FreeCAD, save a log,
 and verify that the expected FCStd and STEP files were produced.
 
 Options:
+  --configure         Open the live SVG parameter editor.
   --open              Open the generated FCStd in graphical FreeCAD afterwards.
   --freecadcmd PATH   Use an explicit FreeCAD executable.
   --output-dir PATH   Expected generator output directory.
@@ -46,6 +47,10 @@ open_after=0
 
 while (($#)); do
     case "$1" in
+        --configure|configure)
+            shift
+            exec python3 "$project_root/tools/parameter_editor.py" "$@"
+            ;;
         --open)
             open_after=1
             shift

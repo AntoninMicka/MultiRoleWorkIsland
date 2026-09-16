@@ -1,11 +1,11 @@
 {
   "adjacent_frame_gaps": {
-    "AP-AS": 32.986176,
-    "AP-AT": 32.986176,
-    "BP-BS": 32.986176,
-    "BP-BT": 32.986176,
-    "CP-CS": 32.986176,
-    "CP-CT": 32.986176
+    "AP-AS": 38.966305,
+    "AP-AT": 38.966305,
+    "BP-BS": 38.966305,
+    "BP-BT": 38.966305,
+    "CP-CS": 38.966305,
+    "CP-CT": 38.966305
   },
   "cad_collisions": [],
   "desk_count": 9,
@@ -26,74 +26,74 @@
   "monitor_poses": {
     "AP": {
       "facing_angle": 0.0,
-      "half_angular_span": 16.602746,
+      "half_angular_span": 17.738117,
       "sight_angle": 180.0,
-      "viewing_distance": 1090.0,
+      "viewing_distance": 1016.025404,
       "x": 400.0,
       "y": 0.0
     },
     "AS": {
-      "facing_angle": -30.734284,
-      "half_angular_span": 13.453433,
-      "sight_angle": 149.265716,
-      "viewing_distance": 1170.47397,
-      "x": 483.923048,
-      "y": 598.179307
+      "facing_angle": -32.173471,
+      "half_angular_span": 14.193093,
+      "sight_angle": 147.826529,
+      "viewing_distance": 1107.110445,
+      "x": 478.923048,
+      "y": 589.519053
     },
     "AT": {
-      "facing_angle": 30.734284,
-      "half_angular_span": 13.453433,
-      "sight_angle": -149.265716,
-      "viewing_distance": 1170.47397,
-      "x": 483.923048,
-      "y": -598.179307
+      "facing_angle": 32.173471,
+      "half_angular_span": 14.193093,
+      "sight_angle": -147.826529,
+      "viewing_distance": 1107.110445,
+      "x": 478.923048,
+      "y": -589.519053
     },
     "BP": {
       "facing_angle": 120.0,
-      "half_angular_span": 16.602746,
+      "half_angular_span": 17.738117,
       "sight_angle": -60.0,
-      "viewing_distance": 1090.0,
+      "viewing_distance": 1016.025404,
       "x": -200.0,
       "y": 346.410162
     },
     "BS": {
-      "facing_angle": 89.265716,
-      "half_angular_span": 13.453433,
-      "sight_angle": -90.734284,
-      "viewing_distance": 1170.47397,
-      "x": -760.0,
+      "facing_angle": 87.826529,
+      "half_angular_span": 14.193093,
+      "sight_angle": -92.173471,
+      "viewing_distance": 1107.110445,
+      "x": -750.0,
       "y": 120.0
     },
     "BT": {
-      "facing_angle": 150.734284,
-      "half_angular_span": 13.453433,
-      "sight_angle": -29.265716,
-      "viewing_distance": 1170.47397,
-      "x": 276.076952,
-      "y": 718.179307
+      "facing_angle": 152.173471,
+      "half_angular_span": 14.193093,
+      "sight_angle": -27.826529,
+      "viewing_distance": 1107.110445,
+      "x": 271.076952,
+      "y": 709.519053
     },
     "CP": {
       "facing_angle": -120.0,
-      "half_angular_span": 16.602746,
+      "half_angular_span": 17.738117,
       "sight_angle": 60.0,
-      "viewing_distance": 1090.0,
+      "viewing_distance": 1016.025404,
       "x": -200.0,
       "y": -346.410162
     },
     "CS": {
-      "facing_angle": -150.734284,
-      "half_angular_span": 13.453433,
-      "sight_angle": 29.265716,
-      "viewing_distance": 1170.47397,
-      "x": 276.076952,
-      "y": -718.179307
+      "facing_angle": -152.173471,
+      "half_angular_span": 14.193093,
+      "sight_angle": 27.826529,
+      "viewing_distance": 1107.110445,
+      "x": 271.076952,
+      "y": -709.519053
     },
     "CT": {
-      "facing_angle": -89.265716,
-      "half_angular_span": 13.453433,
-      "sight_angle": 90.734284,
-      "viewing_distance": 1170.47397,
-      "x": -760.0,
+      "facing_angle": -87.826529,
+      "half_angular_span": 14.193093,
+      "sight_angle": 92.173471,
+      "viewing_distance": 1107.110445,
+      "x": -750.0,
       "y": -120.0
     }
   },
@@ -102,8 +102,10 @@
     "central_user_edge": 800.0,
     "monitor_frame_gap_max": 40.0,
     "monitor_frame_gap_min": 20.0,
-    "primary_rear_edge_width": 1100.0,
-    "side_lift_channel_edge_clearance": 10.0,
+    "primary_rear_edge_width": 1014.359353944898,
+    "side_desk_length": 1000.0,
+    "side_desk_width": 400.0,
+    "side_lift_channel_edge_clearance": 20.0,
     "technical_channel_width": 300.0,
     "usable_work_depth": 400.0,
     "user_edge_width": 800.0
