@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build the MultiRoleWorkIsland concept model with FreeCADCmd.
+# Build the MultiRoleWorkIsland concept model with a FreeCAD executable.
 
 set -Eeuo pipefail
 
@@ -7,12 +7,12 @@ usage() {
     cat <<'EOF'
 Usage: ./run.sh [OPTIONS] [GENERATOR]
 
-Run the MultiRoleWorkIsland Python generator through FreeCADCmd, save a log,
+Run the MultiRoleWorkIsland Python generator through FreeCAD, save a log,
 and verify that the expected FCStd and STEP files were produced.
 
 Options:
   --open              Open the generated FCStd in graphical FreeCAD afterwards.
-  --freecadcmd PATH   Use an explicit FreeCADCmd executable.
+  --freecadcmd PATH   Use an explicit FreeCAD executable.
   --output-dir PATH   Expected generator output directory.
   -h, --help          Show this help.
 
@@ -23,6 +23,8 @@ Defaults:
 
 Environment:
   FREECADCMD          Alternative to --freecadcmd.
+                      Auto-detection tries freecadcmd, FreeCADCmd, freecad,
+                      then FreeCAD.
   QT_QPA_PLATFORM     Defaults to offscreen for the headless build.
 EOF
 }
@@ -100,11 +102,15 @@ if [[ -z "$freecad_cmd" ]]; then
         freecad_cmd="$(command -v freecadcmd)"
     elif command -v FreeCADCmd >/dev/null 2>&1; then
         freecad_cmd="$(command -v FreeCADCmd)"
+    elif command -v freecad >/dev/null 2>&1; then
+        freecad_cmd="$(command -v freecad)"
+    elif command -v FreeCAD >/dev/null 2>&1; then
+        freecad_cmd="$(command -v FreeCAD)"
     else
-        die "FreeCADCmd was not found. Install FreeCAD or use --freecadcmd PATH."
+        die "No FreeCAD executable was found. Install FreeCAD or use --freecadcmd PATH."
     fi
 fi
-[[ -x "$freecad_cmd" ]] || die "FreeCADCmd is not executable: $freecad_cmd"
+[[ -x "$freecad_cmd" ]] || die "FreeCAD is not executable: $freecad_cmd"
 
 if [[ -z "$output_dir" ]]; then
     output_dir="$project_root/output_v2"
@@ -118,7 +124,7 @@ timestamp="$(date -u +'%Y%m%dT%H%M%SZ')"
 log_file="$build_dir/freecad-$timestamp.log"
 
 printf 'Generator: %s\n' "$generator"
-printf 'FreeCADCmd: %s\n' "$freecad_cmd"
+printf 'FreeCAD:    %s\n' "$freecad_cmd"
 printf 'Output:     %s\n' "$output_dir"
 printf 'Log:        %s\n' "$log_file"
 
@@ -126,7 +132,7 @@ export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-offscreen}"
 export PYTHONUNBUFFERED=1
 
 # Run from the generator directory so any relative project resources behave
-# consistently. pipefail preserves FreeCADCmd's failure through tee.
+# consistently. pipefail preserves FreeCAD's failure through tee.
 (
     cd -- "$generator_dir"
     "$freecad_cmd" "$generator"
