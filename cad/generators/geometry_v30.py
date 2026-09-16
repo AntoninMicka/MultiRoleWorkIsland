@@ -47,6 +47,8 @@ def apply_parameters(parameters):
     global PRIMARY_LEGROOM_DEPTH, PRIMARY_COLUMN_RADIUS
     global ENTRY_CORRIDOR_WIDTH, ENTRY_CORRIDOR_OUTER_RADIUS
     global PARTY_MODULE_THICKNESS, PARTY_SURFACE_HEIGHT
+    global PARTY_PARTITION_BOTTOM_HEIGHT, PARTY_STORAGE_VERTICAL_CLEARANCE
+    global CENTRAL_PARTY_STORAGE_HEIGHT
 
     PARAMETERS = dict(values)
     USER_EDGE_WIDTH = values["user_edge_width"]
@@ -81,6 +83,14 @@ def apply_parameters(parameters):
     ENTRY_CORRIDOR_OUTER_RADIUS = USER_RADIUS + 700.0
     PARTY_MODULE_THICKNESS = values["party_module_thickness"]
     PARTY_SURFACE_HEIGHT = values["party_surface_height"]
+    PARTY_PARTITION_BOTTOM_HEIGHT = values["party_partition_bottom_height"]
+    PARTY_STORAGE_VERTICAL_CLEARANCE = values["party_storage_vertical_clearance"]
+    CENTRAL_PARTY_STORAGE_HEIGHT = (
+        PARTY_PARTITION_BOTTOM_HEIGHT
+        + TECH_CHANNEL_WIDTH
+        + 2.0 * WORK_DEPTH
+        + PARTY_STORAGE_VERTICAL_CLEARANCE
+    )
     return dict(values)
 
 
@@ -505,6 +515,35 @@ def party_module_polygons():
     return result
 
 
+def party_storage_arm_polygon(arm_angle):
+    """Return the Work-mode footprint of an arm module standing in the channel."""
+    seam_radius, length, _half_width = party_arm_dimensions()
+    half_thickness = PARTY_MODULE_THICKNESS / 2.0
+    local_points = (
+        (seam_radius, -half_thickness),
+        (seam_radius + length, -half_thickness),
+        (seam_radius + length, half_thickness),
+        (seam_radius, half_thickness),
+    )
+    return tuple(local_to_world(x, y, arm_angle) for x, y in local_points)
+
+
+def party_storage_ranges():
+    """Return exact Z ranges for the provisional Work-mode storage poses."""
+    _seam_radius, _length, half_width = party_arm_dimensions()
+    partition_height = 2.0 * half_width
+    return {
+        "arm": (
+            PARTY_PARTITION_BOTTOM_HEIGHT,
+            PARTY_PARTITION_BOTTOM_HEIGHT + partition_height,
+        ),
+        "central": (
+            CENTRAL_PARTY_STORAGE_HEIGHT,
+            CENTRAL_PARTY_STORAGE_HEIGHT + PARTY_MODULE_THICKNESS,
+        ),
+    }
+
+
 def _sample_convex_polygon(polygon, steps=12):
     """Sample a convex polygon as a fan of triangles, including its edges."""
     samples = []
@@ -590,6 +629,12 @@ def svg_plan():
         '<polygon id="central-party" points="%s" fill="#e8bd45" stroke-dasharray="8 5"/>'
         % point_list(central)
     )
+    for arm_index, arm_angle in enumerate((60.0, 180.0, 300.0), 1):
+        lines.append(
+            '<polygon id="party-storage-arm-%d" points="%s" fill="#e8bd45" '
+            'fill-opacity="0.72" stroke-dasharray="4 3"/>'
+            % (arm_index, point_list(party_storage_arm_polygon(arm_angle)))
+        )
     lines.append('<g fill="#18212a" fill-opacity="0.88" stroke="#05090c">')
     for name, monitor in sorted(monitor_body_polygons().items()):
         lines.append('<polygon id="monitor-%s" points="%s"/>' % (name, point_list(monitor)))
@@ -623,6 +668,7 @@ def svg_plan():
         '<text x="520" y="300" stroke="none">primary depth %.0f mm</text>' % WORK_DEPTH,
         '<text x="500" y="495" text-anchor="middle" stroke="none">technical channel %.0f mm</text>'
         % TECH_CHANNEL_WIDTH,
+        '<text x="500" y="965" text-anchor="middle" stroke="none">gold dashed: Work storage of party modules</text>',
         '</g>',
         '</svg>',
     ))

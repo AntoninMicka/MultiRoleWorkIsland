@@ -63,6 +63,7 @@ FOLLOW_FAULT   = 50 mm
 - Koncept V3.0 dělí party vrstvu na centrální modul `CENTRAL_TOP` a tři shodně odvozené ramenní moduly `PARTY_ARM_1/2/3`. Přímé spáry přesně navazují na uzavřený půdorys V2.3, moduly se půdorysně nepřekrývají a společně zakrývají všech devět pracovních desek i parkovací půdorysy monitorů.
 - Horní rovina všech čtyř party modulů je 700 mm; v aktuálním statickém modelu ji tvoří 40mm krycí vrstva podepřená ve výšce 660 mm. Uložení v režimu Work/Hybrid a kinematika přestavení zatím nejsou navrženy ani validovány.
 - Ramenní party desky mohou být v pracovním/hybridním režimu postavené jako vertikální přepážky.
+- Koncept V3.1 ukládá tři ramenní moduly ve Work jako svislé přepážky v osách technologických kanálů: spodní hrana 780 mm, horní hrana 1880 mm. Centrální modul je vodorovně zaparkovaný nad monitorovou zónou v rozsahu 1900–1940 mm. Mezi polohami zůstává 20mm statická mezera; únosnost, vedení a pohybové obálky ještě nejsou validovány.
 - Centrální kryt překrývá trojúhelník primárních monitorů.
 - Party transformace vyžaduje zarovnání dotčených pracovních ploch na 700 mm, zaparkování monitorů, přestavení desek a mechanické zajištění.
 
@@ -325,7 +326,7 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 
 - [x] Navrhnout kompletní druhou sadu horních desek překrývající pracovní vrstvu, monitory a mezery.
 - [x] Rozdělit horní vrstvu na tři ramenní moduly a centrální modul s realizovatelnými spárami.
-- [ ] Navrhnout uložení party desek v režimech Work/Hybrid.
+- [x] Navrhnout koncepční uložení party desek v režimech Work/Hybrid: ramena jako nezávislé svislé přepážky v kanálech, centrální modul vodorovně nad monitorovou zónou. Přesná kinematika a konstrukční validace zůstávají otevřené.
 - [ ] Prověřit lift → rotate → lower sekvence a přesné pohybové obálky, nikoliv pouze bounding boxy.
 - [ ] Navrhnout panty, vedení a ruční nebo motorické přestavení.
 - [ ] Umístit mechanické zámky a dvojici potvrzení POSITION/LOCK.
@@ -458,16 +459,15 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 
 ## 10. Nejbližší backlog
 
-1. Navrhnout uložení čtyř party modulů v režimech Work/Hybrid.
-2. Navrhnout panty, vedení, způsob přestavení a mechanické zámky party modulů.
-3. Vytvořit přesné pohybové obálky party modulů a ověřit sekvenci Work ↔ Party.
-4. Definovat polohu očí, doporučenou pozorovací vzdálenost, poloměr monitorového oblouku a cílové úhly S/T.
-5. Ověřit monitorovou sestavu pro různé výšky uživatele a parametrizovat pracovní i parkovací polohy.
-6. Navrhnout vertikální lift, horizontální posun a způsob natočení monitorových modulů.
-7. Vytvořit přesné pohybové obálky monitorů a ověřit kolize s deskami, kabely a party vrstvou.
-8. Změřit potřebnou šířku technického kanálu podle reálných monitorových liftů, horizontálních posunů a kabelových řetězů.
-9. Založit softwarový simulátor stavových automatů dříve, než se vyberou finální pohony.
-10. Sepsat první tabulku I/O, stavů, interlocků a vlastnictví os včetně monitorových modulů.
+1. Navrhnout panty, vedení, způsob přestavení a mechanické zámky party modulů.
+2. Vytvořit přesné pohybové obálky party modulů a ověřit sekvenci Work ↔ Party.
+3. Definovat polohu očí, doporučenou pozorovací vzdálenost, poloměr monitorového oblouku a cílové úhly S/T.
+4. Ověřit monitorovou sestavu pro různé výšky uživatele a parametrizovat pracovní i parkovací polohy.
+5. Navrhnout vertikální lift, horizontální posun a způsob natočení monitorových modulů.
+6. Vytvořit přesné pohybové obálky monitorů a ověřit kolize s deskami, kabely a party vrstvou.
+7. Změřit potřebnou šířku technického kanálu podle reálných monitorových liftů, horizontálních posunů a kabelových řetězů.
+8. Založit softwarový simulátor stavových automatů dříve, než se vyberou finální pohony.
+9. Sepsat první tabulku I/O, stavů, interlocků a vlastnictví os včetně monitorových modulů.
 
 ## 11. Otevřené otázky
 

@@ -7,7 +7,7 @@ primary_depth = 400
 # Technologický kanál [mm]
 technical_channel_width = 300
 # Délka S/T [mm]
-side_desk_length = 1000
+side_desk_length = 1200
 # Čelní hrana P [mm]
 user_edge_width = 800
 # Odstup uživatele [mm]
@@ -36,3 +36,7 @@ monitor_desk_clearance = 20
 party_surface_height = 700
 # Tloušťka Party [mm]
 party_module_thickness = 40
+# Spodek uložené přepážky [mm]
+party_partition_bottom_height = 780
+# Svislá mezera uložených modulů [mm]
+party_storage_vertical_clearance = 20

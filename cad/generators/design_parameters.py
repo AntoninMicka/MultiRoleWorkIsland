@@ -33,6 +33,8 @@ PARAMETER_SPECS = (
     ("monitor_desk_clearance", "Rezerva lift–deska", 20.0, 0.0, 100.0, "mm", "Minimální plánovaná mezera od pracovní desky."),
     ("party_surface_height", "Výška Party", 700.0, 600.0, 1200.0, "mm", "Výška horní roviny party vrstvy."),
     ("party_module_thickness", "Tloušťka Party", 40.0, 15.0, 100.0, "mm", "Tloušťka horních party modulů."),
+    ("party_partition_bottom_height", "Spodek uložené přepážky", 780.0, 760.0, 1200.0, "mm", "Spodní hrana svislého ramenního modulu ve Work."),
+    ("party_storage_vertical_clearance", "Svislá mezera uložených modulů", 20.0, 20.0, 300.0, "mm", "Mezera mezi horní hranou přepážek a centrálním modulem."),
 )
 
 DEFAULTS = {spec[0]: spec[2] for spec in PARAMETER_SPECS}

@@ -103,7 +103,7 @@
     "monitor_frame_gap_max": 40.0,
     "monitor_frame_gap_min": 20.0,
     "primary_rear_edge_width": 1014.359353944898,
-    "side_desk_length": 1000.0,
+    "side_desk_length": 1200.0,
     "side_desk_width": 400.0,
     "side_lift_channel_edge_clearance": 20.0,
     "technical_channel_width": 300.0,
@@ -123,10 +123,25 @@
       "PARTY_ARM_3"
     ],
     "seam_failures": [],
-    "storage_pose_status": "open",
+    "storage_pose_status": "concept-selected",
     "support_height": 660.0,
     "surface_height": 700.0,
     "thickness": 40.0
+  },
+  "party_storage": {
+    "arm_count": 3,
+    "arm_z_range": [
+      780.0,
+      1880.0
+    ],
+    "central_z_range": [
+      1900.0,
+      1940.0
+    ],
+    "concept": "vertical arm partitions plus overhead central module",
+    "kinematic_validation_status": "open",
+    "static_collisions": [],
+    "static_pose_status": "pass"
   },
   "plan_collisions": [],
   "status": "pass",

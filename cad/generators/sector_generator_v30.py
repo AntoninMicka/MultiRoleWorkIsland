@@ -31,8 +31,10 @@ The FCStd document contains independently switchable groups:
 V3.0 retains the closed V2.3 worktop layout and adds a continuous four-module
 party layer: one central module covers the centre and P desks, while three arm
 modules cover S/T pairs and their technical channels. All final party surfaces
-are at 700 mm. Storage, hinges, locks and transformation kinematics remain
-open engineering work; this is not manufacturing documentation.
+are at 700 mm. Work mode shows the selected storage concept: arm modules stand
+as channel-centred partitions and the central module parks overhead. Hinges,
+locks and transformation kinematics remain open engineering work; this is not
+manufacturing documentation.
 
 Coordinate convention
 ---------------------
@@ -113,6 +115,8 @@ ARM_PARTY_COVER_START = HUB_RADIUS + 120.0
 ARM_PARTY_COVER_WIDTH = SHAFT_GAP + 80.0
 PARTY_COVER_THICKNESS = Geometry.PARTY_MODULE_THICKNESS
 PARTY_SUPPORT_HEIGHT = PARTY_HEIGHT - PARTY_COVER_THICKNESS
+PARTY_PARTITION_BOTTOM_HEIGHT = Geometry.PARTY_PARTITION_BOTTOM_HEIGHT
+CENTRAL_PARTY_STORAGE_HEIGHT = Geometry.CENTRAL_PARTY_STORAGE_HEIGHT
 PARTITION_HEIGHT = 720.0
 PARTITION_THICKNESS = 40.0
 CENTRAL_PARTY_TOP_RADIUS = Geometry.CENTRAL_PARTY_RADIUS
@@ -531,9 +535,37 @@ def build_work_mode(doc, group):
                 COLORS["DISPLAY"], "WORK", station, "%s display" % kind,
             ))
 
-    # V3.0 deliberately does not invent a storage pose for the full-size party
-    # modules. Their Work/Hybrid storage and transformation belong to the next
-    # M2 kinematic step.
+    # Provisional M2 storage poses. Each rectangular arm module keeps its exact
+    # dimensions and stands longitudinally in the technical channel. The
+    # central module remains horizontal above the complete monitor zone.
+    central_storage = polygon_prism(
+        Geometry.central_party_polygon(),
+        PARTY_COVER_THICKNESS,
+        CENTRAL_PARTY_STORAGE_HEIGHT,
+    )
+    objects.append(add_feature(
+        doc, group, central_storage,
+        "WORK_PARTY_CentralStored",
+        "Central party module - overhead storage",
+        COLORS["PARTY"], "WORK", function="party storage module", transparency=35,
+    ))
+    seam_radius, arm_length, arm_half_width = Geometry.party_arm_dimensions()
+    for arm_index, arm_angle in enumerate((60.0, 180.0, 300.0), 1):
+        partition = local_box(
+            arm_length,
+            PARTY_COVER_THICKNESS,
+            arm_half_width * 2.0,
+            seam_radius,
+            0.0,
+            PARTY_PARTITION_BOTTOM_HEIGHT,
+            arm_angle,
+        )
+        objects.append(add_feature(
+            doc, group, partition,
+            "WORK_PARTY_Arm%d_Stored" % arm_index,
+            "Arm %d party module - vertical partition" % arm_index,
+            COLORS["PARTY"], "WORK", function="party storage module", transparency=18,
+        ))
     return objects
 
 
@@ -653,6 +685,8 @@ def add_document_parameters(doc):
         ("WorkHeight", WORK_HEIGHT),
         ("PartySurfaceHeight", PARTY_HEIGHT),
         ("PartySupportHeight", PARTY_SUPPORT_HEIGHT),
+        ("PartyPartitionBottomHeight", PARTY_PARTITION_BOTTOM_HEIGHT),
+        ("CentralPartyStorageHeight", CENTRAL_PARTY_STORAGE_HEIGHT),
         ("ServiceHeight", SERVICE_HEIGHT),
         ("SoftwareLiftMin", COL_SW_MIN),
         ("SoftwareLiftMax", COL_SW_MAX),
@@ -661,7 +695,7 @@ def add_document_parameters(doc):
         params.addProperty("App::PropertyLength", name, "V3.0 dimensions")
         setattr(params, name, value)
     params.addProperty("App::PropertyString", "ModelStatus", "V3.0 metadata")
-    params.ModelStatus = "Static party-layer concept CAD - kinematics not yet validated"
+    params.ModelStatus = "Party storage poses selected - transformation kinematics not yet validated"
     return params
 
 
@@ -683,7 +717,28 @@ def cad_desk_collision_pairs(work_objects):
     return collisions
 
 
-def write_design_reports(cad_collisions):
+def cad_party_storage_collision_pairs(work_objects):
+    """Check stored party solids against Work desks and monitor bodies."""
+    stored = []
+    obstacles = []
+    for obj in work_objects:
+        try:
+            if obj.Function == "party storage module":
+                stored.append(obj)
+            elif obj.Function.endswith("work plane") or obj.Function.endswith("monitor"):
+                obstacles.append(obj)
+        except Exception:
+            pass
+    collisions = []
+    for module in stored:
+        for obstacle in obstacles:
+            common = module.Shape.common(obstacle.Shape)
+            if not common.isNull() and common.Volume > 1e-6:
+                collisions.append((module.Name, obstacle.Name, common.Volume))
+    return collisions
+
+
+def write_design_reports(cad_collisions, storage_collisions):
     """Write reviewable plan and collision evidence next to CAD artifacts."""
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     plan_collisions = Geometry.collision_pairs()
@@ -723,6 +778,7 @@ def write_design_reports(cad_collisions):
         technical_channel_edge_failures,
         side_lift_channel_clearance < 0.0,
         cad_collisions,
+        storage_collisions,
         monitor_lift_desk_collisions,
         monitor_body_desk_collisions,
         monitor_body_collisions,
@@ -745,6 +801,18 @@ def write_design_reports(cad_collisions):
             {"desk_a": item[0], "desk_b": item[1], "volume": item[2]}
             for item in cad_collisions
         ],
+        "party_storage": {
+            "concept": "vertical arm partitions plus overhead central module",
+            "arm_count": 3,
+            "arm_z_range": list(Geometry.party_storage_ranges()["arm"]),
+            "central_z_range": list(Geometry.party_storage_ranges()["central"]),
+            "static_collisions": [
+                {"module": item[0], "obstacle": item[1], "volume": item[2]}
+                for item in storage_collisions
+            ],
+            "static_pose_status": "pass" if not storage_collisions else "fail",
+            "kinematic_validation_status": "open",
+        },
         "monitor_lift_desk_collisions": [list(item) for item in monitor_lift_desk_collisions],
         "monitor_body_desk_collisions": [list(item) for item in monitor_body_desk_collisions],
         "monitor_body_collisions": [list(item) for item in monitor_body_collisions],
@@ -758,7 +826,7 @@ def write_design_reports(cad_collisions):
             "support_height": PARTY_SUPPORT_HEIGHT,
             "thickness": PARTY_COVER_THICKNESS,
             "height_valid": party_height_valid,
-            "storage_pose_status": "open",
+            "storage_pose_status": "concept-selected",
             "kinematic_validation_status": "open",
         },
         "adjacent_frame_gaps": frame_gaps,
@@ -873,7 +941,10 @@ def main():
     App.Console.PrintMessage("Building multifunction island party-layer CAD V3.0...\n")
     built = build_island()
     doc = built["doc"]
-    write_design_reports(cad_desk_collision_pairs(built["work"]))
+    write_design_reports(
+        cad_desk_collision_pairs(built["work"]),
+        cad_party_storage_collision_pairs(built["work"]),
+    )
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     fcstd_path = os.path.join(OUTPUT_DIR, DOCUMENT_NAME + ".FCStd")

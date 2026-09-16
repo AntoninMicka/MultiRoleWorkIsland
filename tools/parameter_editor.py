@@ -57,6 +57,23 @@ def derived_values(values):
         "Výška podpory Party": (
             values["party_surface_height"] - values["party_module_thickness"]
         ),
+        "Výška uložené přepážky": (
+            values["technical_channel_width"] + 2.0 * values["primary_depth"]
+        ),
+        "Horní hrana uložené přepážky": (
+            values["party_partition_bottom_height"]
+            + values["technical_channel_width"]
+            + 2.0 * values["primary_depth"]
+        ),
+        "Mezera přepážka → uložený střed": (
+            values["party_storage_vertical_clearance"]
+        ),
+        "Spodní hrana uloženého středu": (
+            values["party_partition_bottom_height"]
+            + values["technical_channel_width"]
+            + 2.0 * values["primary_depth"]
+            + values["party_storage_vertical_clearance"]
+        ),
     }
 
 

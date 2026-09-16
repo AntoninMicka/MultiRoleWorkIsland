@@ -3,15 +3,18 @@
 <rect width="1000" height="1000" fill="#fafafa"/>
 <g stroke="#25313b" stroke-width="1.5" fill-opacity="0.60">
 <polygon id="desk-AP" points="602.53,611.58 690.53,588.00 690.53,412.00 602.53,388.42" fill="#3f8dd3"/>
-<polygon id="desk-AS" points="602.53,388.42 712.53,197.89 800.53,221.47 690.53,412.00" fill="#3db889"/>
-<polygon id="desk-AT" points="602.53,611.58 712.53,802.11 800.53,778.53 690.53,588.00" fill="#ed8b35"/>
+<polygon id="desk-AS" points="602.53,388.42 734.53,159.79 822.53,183.37 690.53,412.00" fill="#3db889"/>
+<polygon id="desk-AT" points="602.53,611.58 734.53,840.21 822.53,816.63 690.53,588.00" fill="#ed8b35"/>
 <polygon id="desk-BP" points="545.37,355.42 480.95,291.00 328.53,379.00 352.11,467.00" fill="#3f8dd3"/>
-<polygon id="desk-BS" points="352.11,467.00 132.11,467.00 108.53,379.00 328.53,379.00" fill="#3db889"/>
-<polygon id="desk-BT" points="545.37,355.42 655.37,164.89 590.95,100.47 480.95,291.00" fill="#ed8b35"/>
+<polygon id="desk-BS" points="352.11,467.00 88.11,467.00 64.53,379.00 328.53,379.00" fill="#3db889"/>
+<polygon id="desk-BT" points="545.37,355.42 677.37,126.79 612.95,62.37 480.95,291.00" fill="#ed8b35"/>
 <polygon id="desk-CP" points="352.11,533.00 328.53,621.00 480.95,709.00 545.37,644.58" fill="#3f8dd3"/>
-<polygon id="desk-CS" points="545.37,644.58 655.37,835.11 590.95,899.53 480.95,709.00" fill="#3db889"/>
-<polygon id="desk-CT" points="352.11,533.00 132.11,533.00 108.53,621.00 328.53,621.00" fill="#ed8b35"/>
+<polygon id="desk-CS" points="545.37,644.58 677.37,873.21 612.95,937.63 480.95,709.00" fill="#3db889"/>
+<polygon id="desk-CT" points="352.11,533.00 88.11,533.00 64.53,621.00 328.53,621.00" fill="#ed8b35"/>
 <polygon id="central-party" points="328.53,621.00 480.95,709.00 690.53,588.00 690.53,412.00 480.95,291.00 328.53,379.00" fill="#e8bd45" stroke-dasharray="8 5"/>
+<polygon id="party-storage-arm-1" points="589.55,353.70 721.55,125.07 713.93,120.67 581.93,349.30" fill="#e8bd45" fill-opacity="0.72" stroke-dasharray="4 3"/>
+<polygon id="party-storage-arm-2" points="328.53,495.60 64.53,495.60 64.53,504.40 328.53,504.40" fill="#e8bd45" fill-opacity="0.72" stroke-dasharray="4 3"/>
+<polygon id="party-storage-arm-3" points="581.93,650.70 713.93,879.33 721.55,874.93 589.55,646.30" fill="#e8bd45" fill-opacity="0.72" stroke-dasharray="4 3"/>
 <g fill="#18212a" fill-opacity="0.88" stroke="#05090c">
 <polygon id="monitor-AP" points="583.82,571.50 592.18,571.50 592.18,428.50 583.82,428.50"/>
 <circle id="monitor-lift-AP" cx="588.00" cy="500.00" r="9.90" fill="#dbe4ea"/>
@@ -47,5 +50,6 @@
 <line x1="500.00" y1="397.47" x2="500.00" y2="309.47"/>
 <text x="520" y="300" stroke="none">primary depth 400 mm</text>
 <text x="500" y="495" text-anchor="middle" stroke="none">technical channel 300 mm</text>
+<text x="500" y="965" text-anchor="middle" stroke="none">gold dashed: Work storage of party modules</text>
 </g>
 </svg>

@@ -123,6 +123,23 @@ def test_party_surface_height_is_700_mm():
     assert geometry.PARTY_SURFACE_HEIGHT == 700.0
 
 
+def test_work_storage_uses_vertical_arm_partitions_and_overhead_central_module():
+    ranges = geometry.party_storage_ranges()
+    _seam_radius, length, half_width = geometry.party_arm_dimensions()
+    assert ranges["arm"] == (780.0, 1880.0)
+    assert ranges["central"] == (1900.0, 1940.0)
+    assert ranges["central"][0] - ranges["arm"][1] == 20.0
+    for arm_angle in (60.0, 180.0, 300.0):
+        footprint = geometry.party_storage_arm_polygon(arm_angle)
+        edge_lengths = sorted(
+            geometry.distance(start, end)
+            for start, end in geometry.polygon_edges(footprint)
+        )
+        assert math.isclose(edge_lengths[0], geometry.PARTY_MODULE_THICKNESS)
+        assert math.isclose(edge_lengths[-1], length)
+        assert math.isclose(2.0 * half_width, 1100.0)
+
+
 def test_party_svg_names_all_four_modules():
     svg = geometry.svg_party_plan()
     assert 'id="central_top"' in svg
@@ -136,6 +153,9 @@ def test_svg_plan_contains_the_controlling_dimensions():
     svg = geometry.svg_plan()
     assert 'id="desk-AP"' in svg
     assert 'id="central-party"' in svg
+    assert 'id="party-storage-arm-1"' in svg
+    assert 'id="party-storage-arm-2"' in svg
+    assert 'id="party-storage-arm-3"' in svg
     assert 'id="monitor-AP"' in svg
     assert 'id="monitor-lift-AS"' in svg
     assert "user edge 800 mm" in svg
