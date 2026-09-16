@@ -10,7 +10,7 @@ def test_repository_configuration_matches_current_design():
     values = design_parameters.load_parameters()
     assert values["primary_depth"] == 400.0
     assert values["technical_channel_width"] == 300.0
-    assert values["side_desk_length"] == 1000.0
+    assert values["side_desk_length"] == 1200.0
     assert design_parameters.validate_parameters(values) == []
 
 
@@ -31,6 +31,13 @@ def test_invalid_lift_channel_relationship_is_rejected():
     values["monitor_lift_diameter"] = 90.0
     errors = design_parameters.validate_parameters(values)
     assert any("Lift S/T má k desce" in error for error in errors)
+
+
+def test_party_mechanism_must_fit_inside_technical_channel():
+    values = dict(design_parameters.DEFAULTS)
+    values["party_guide_diameter"] = values["technical_channel_width"] + 1.0
+    errors = design_parameters.validate_parameters(values)
+    assert any("Vedení Party" in error for error in errors)
 
 
 def test_geometry_recalculates_linked_values_from_inputs():

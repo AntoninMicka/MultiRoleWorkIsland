@@ -140,6 +140,33 @@ def test_work_storage_uses_vertical_arm_partitions_and_overhead_central_module()
         assert math.isclose(2.0 * half_width, 1100.0)
 
 
+def test_party_arm_mechanism_has_two_guides_rotation_and_independent_locks():
+    for arm_angle in (60.0, 180.0, 300.0):
+        spec = geometry.party_arm_mechanism(arm_angle)
+        assert len(spec["guide_points"]) == 2
+        assert spec["rotation_degrees"] == 90.0
+        assert spec["lift_travel"] == 650.0
+        assert len(spec["party_lock_points"]) == 4
+        assert spec["stored_lock_count"] == 2
+        for point in spec["guide_points"]:
+            local = geometry.rotate_point(point, -arm_angle)
+            assert math.isclose(local[1], 0.0, abs_tol=1e-9)
+
+
+def test_central_party_mechanism_has_three_synchronized_guides_and_locks():
+    spec = geometry.central_party_mechanism()
+    assert len(spec["guide_points"]) == 3
+    assert len(spec["party_lock_points"]) == 3
+    assert spec["stored_lock_count"] == 3
+    assert spec["lift_travel"] == 1240.0
+    for point in spec["guide_points"]:
+        assert math.isclose(
+            geometry.distance((0.0, 0.0), point),
+            geometry.CENTRAL_PARTY_GUIDE_RADIUS,
+            abs_tol=1e-9,
+        )
+
+
 def test_party_svg_names_all_four_modules():
     svg = geometry.svg_party_plan()
     assert 'id="central_top"' in svg

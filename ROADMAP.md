@@ -18,7 +18,7 @@ Pracovní název projektu a repozitáře: **MultiRoleWorkIsland**.
 - Technický kanál mezi sousedními plochami na rameni má ve V3.0 pracovní hodnotu 300 mm; musí se ověřit podle reálných monitorových liftů, konstrukce a kabelových řetězů.
 - Čelní hrana pracoviště směrem k uživateli má mít přibližně 800 mm.
 - V3.0 zmenšuje radiální hloubku primární pracovní desky na 400 mm. Původní studie V2.1–V2.3 ověřovala 500–600 mm s výchozí hodnotou 550 mm; při zachování 150mm zadního nosného pásu zbývá 250mm referenční prostor pro nohy, takže ergonomii kratší desky je nutné znovu ověřit fyzickou maketou.
-- V3.0 používá společnou 400mm vzdálenost mezi hlavní přední a zadní hranou všech P/S/T desek. S/T zůstávají dlouhé 1000 mm a vznikají přímým vysunutím celé boční hrany P, takže napojení je plynulé bez přechodových segmentů a zářezů.
+- V3.0 používá společnou 400mm vzdálenost mezi hlavní přední a zadní hranou všech P/S/T desek. Aktuální konfigurační délka S/T je 1200 mm; vznikají přímým vysunutím celé boční hrany P, takže napojení je plynulé bez přechodových segmentů a zářezů.
 - P/S/T desky se nesmějí půdorysně překrývat. Jejich tvar se má odvodit od polohy uživatele, monitoru, ergonomické hloubky a hran sousedních pracovišť, nikoliv z pevných obdélníků.
 - Centrální party útvar má trojnásobnou symetrii, ale nemá být pravidelným šestiúhelníkem. Tři hlavní hrany orientované k uživatelům mají přibližně 800 mm; zbývající hrany vzniknou z návaznosti desek.
 - Primární monitory tvoří trojúhelník uprostřed. Sekundární a terciární monitor každého pracoviště se orientují k jeho uživateli; nemají být pouze kolmé k ose ramene.
@@ -61,9 +61,10 @@ FOLLOW_FAULT   = 50 mm
 - Party režim není pouze sada úzkých spojovacích pásů.
 - Druhá sada desek musí vytvořit souvislou horní vrstvu a kompletně překrýt pracovní desky, zaparkované monitory i technické mezery.
 - Koncept V3.0 dělí party vrstvu na centrální modul `CENTRAL_TOP` a tři shodně odvozené ramenní moduly `PARTY_ARM_1/2/3`. Přímé spáry přesně navazují na uzavřený půdorys V2.3, moduly se půdorysně nepřekrývají a společně zakrývají všech devět pracovních desek i parkovací půdorysy monitorů.
-- Horní rovina všech čtyř party modulů je 700 mm; v aktuálním statickém modelu ji tvoří 40mm krycí vrstva podepřená ve výšce 660 mm. Uložení v režimu Work/Hybrid a kinematika přestavení zatím nejsou navrženy ani validovány.
+- Horní rovina všech čtyř party modulů je 700 mm; v aktuálním statickém modelu ji tvoří 40mm krycí vrstva podepřená ve výšce 660 mm. Uložení v režimu Work/Hybrid je navrženo koncepčně; kinematika přestavení zatím není validována.
 - Ramenní party desky mohou být v pracovním/hybridním režimu postavené jako vertikální přepážky.
 - Koncept V3.1 ukládá tři ramenní moduly ve Work jako svislé přepážky v osách technologických kanálů: spodní hrana 780 mm, horní hrana 1880 mm. Centrální modul je vodorovně zaparkovaný nad monitorovou zónou v rozsahu 1900–1940 mm. Mezi polohami zůstává 20mm statická mezera; únosnost, vedení a pohybové obálky ještě nejsou validovány.
+- V3.1 vede každý ramenní modul na dvojici synchronizovaných svislých vozíků a otáčí jej o 90° kolem podélné osy. Centrální modul používá tři synchronizovaná teleskopická vedení bez rotace. Party poloha ramene má čtyři nosné zámky, uložená poloha dva zámky vozíků a centrální modul tři zámky; každý cílový stav vyžaduje oddělené potvrzení `POSITION` a `LOCK`.
 - Centrální kryt překrývá trojúhelník primárních monitorů.
 - Party transformace vyžaduje zarovnání dotčených pracovních ploch na 700 mm, zaparkování monitorů, přestavení desek a mechanické zajištění.
 
@@ -328,8 +329,8 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 - [x] Rozdělit horní vrstvu na tři ramenní moduly a centrální modul s realizovatelnými spárami.
 - [x] Navrhnout koncepční uložení party desek v režimech Work/Hybrid: ramena jako nezávislé svislé přepážky v kanálech, centrální modul vodorovně nad monitorovou zónou. Přesná kinematika a konstrukční validace zůstávají otevřené.
 - [ ] Prověřit lift → rotate → lower sekvence a přesné pohybové obálky, nikoliv pouze bounding boxy.
-- [ ] Navrhnout panty, vedení a ruční nebo motorické přestavení.
-- [ ] Umístit mechanické zámky a dvojici potvrzení POSITION/LOCK.
+- [x] Navrhnout koncepční vedení a motorické přestavení: dvojice synchronizovaných vozíků s podélnou 90° osou pro ramena a tři synchronizovaná teleskopická vedení pro střed. Dimenzování pohonů a ložisek zůstává otevřené.
+- [x] Umístit koncepční mechanické zámky a požadovat oddělené potvrzení `POSITION`/`LOCK`; výběr konkrétních prvků a bezpečnostní kategorie zůstává otevřený.
 - [x] Staticky prověřit souvislé geometrické zarovnání celého party povrchu na 700 mm; bezpečnost pohybu zůstává součástí otevřené kinematické validace.
 - [ ] Navrhnout samostatný vertikální lift každého monitoru.
 - [ ] Navrhnout horizontální kolejnicový nebo teleskopický posun S/T monitorů.
@@ -459,15 +460,14 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 
 ## 10. Nejbližší backlog
 
-1. Navrhnout panty, vedení, způsob přestavení a mechanické zámky party modulů.
-2. Vytvořit přesné pohybové obálky party modulů a ověřit sekvenci Work ↔ Party.
-3. Definovat polohu očí, doporučenou pozorovací vzdálenost, poloměr monitorového oblouku a cílové úhly S/T.
-4. Ověřit monitorovou sestavu pro různé výšky uživatele a parametrizovat pracovní i parkovací polohy.
-5. Navrhnout vertikální lift, horizontální posun a způsob natočení monitorových modulů.
-6. Vytvořit přesné pohybové obálky monitorů a ověřit kolize s deskami, kabely a party vrstvou.
-7. Změřit potřebnou šířku technického kanálu podle reálných monitorových liftů, horizontálních posunů a kabelových řetězů.
-8. Založit softwarový simulátor stavových automatů dříve, než se vyberou finální pohony.
-9. Sepsat první tabulku I/O, stavů, interlocků a vlastnictví os včetně monitorových modulů.
+1. Vytvořit přesné pohybové obálky party modulů a ověřit sekvenci Work ↔ Party.
+2. Definovat polohu očí, doporučenou pozorovací vzdálenost, poloměr monitorového oblouku a cílové úhly S/T.
+3. Ověřit monitorovou sestavu pro různé výšky uživatele a parametrizovat pracovní i parkovací polohy.
+4. Navrhnout vertikální lift, horizontální posun a způsob natočení monitorových modulů.
+5. Vytvořit přesné pohybové obálky monitorů a ověřit kolize s deskami, kabely a party vrstvou.
+6. Změřit potřebnou šířku technického kanálu podle reálných monitorových liftů, horizontálních posunů a kabelových řetězů.
+7. Založit softwarový simulátor stavových automatů dříve, než se vyberou finální pohony.
+8. Sepsat první tabulku I/O, stavů, interlocků a vlastnictví os včetně monitorových modulů.
 
 ## 11. Otevřené otázky
 

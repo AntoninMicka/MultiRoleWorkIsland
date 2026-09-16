@@ -40,3 +40,11 @@ party_module_thickness = 40
 party_partition_bottom_height = 780
 # Svislá mezera uložených modulů [mm]
 party_storage_vertical_clearance = 20
+# Průměr otočné osy ramene [mm]
+party_arm_axis_diameter = 40
+# Průměr vedení Party [mm]
+party_guide_diameter = 50
+# Průměr zámku Party [mm]
+party_lock_pin_diameter = 16
+# Roztečný poloměr vedení středu [mm]
+central_party_guide_radius = 140

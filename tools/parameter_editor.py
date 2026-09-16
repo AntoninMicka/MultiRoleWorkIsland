@@ -74,6 +74,20 @@ def derived_values(values):
             + 2.0 * values["primary_depth"]
             + values["party_storage_vertical_clearance"]
         ),
+        "Zdvih osy ramenního modulu": (
+            values["party_partition_bottom_height"]
+            + (values["technical_channel_width"] + 2.0 * values["primary_depth"]) / 2.0
+            - values["party_surface_height"]
+            + values["party_module_thickness"] / 2.0
+        ),
+        "Zdvih centrálního modulu": (
+            values["party_partition_bottom_height"]
+            + values["technical_channel_width"]
+            + 2.0 * values["primary_depth"]
+            + values["party_storage_vertical_clearance"]
+            - values["party_surface_height"]
+            + values["party_module_thickness"]
+        ),
     }
 
 

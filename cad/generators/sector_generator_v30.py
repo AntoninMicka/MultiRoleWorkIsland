@@ -141,6 +141,8 @@ COLORS = {
     "S": (0.24, 0.72, 0.55),       # green
     "T": (0.93, 0.55, 0.22),       # orange
     "PARTY": (0.92, 0.74, 0.27),   # gold
+    "MECHANISM": (0.23, 0.31, 0.38),
+    "LOCK": (0.82, 0.16, 0.14),
     "STRUCTURE": (0.22, 0.24, 0.28),
     "STRUCTURE_2": (0.42, 0.45, 0.50),
     "MONITOR": (0.075, 0.085, 0.10),
@@ -286,6 +288,20 @@ def cylinder_at(x, y, diameter, height, z0):
         height,
         App.Vector(x, y, z0),
         App.Vector(0, 0, 1),
+    )
+
+
+def cylinder_between(start, end, diameter):
+    direction = App.Vector(
+        end[0] - start[0],
+        end[1] - start[1],
+        end[2] - start[2],
+    )
+    return Part.makeCylinder(
+        diameter / 2.0,
+        direction.Length,
+        App.Vector(*start),
+        direction,
     )
 
 
@@ -476,6 +492,115 @@ def build_static_structure(doc, group):
                 COLORS["STRUCTURE_2"], "STATIC", station, "%s outer column" % kind,
             ))
 
+    return objects
+
+
+def build_party_mechanisms(doc, group):
+    """Build review geometry for the selected M2 guides, axes and locks."""
+    objects = []
+    for arm_index, arm_angle in enumerate((60.0, 180.0, 300.0), 1):
+        spec = Geometry.party_arm_mechanism(arm_angle)
+        for guide_index, (x, y) in enumerate(spec["guide_points"], 1):
+            guide = cylinder_at(
+                x,
+                y,
+                Geometry.PARTY_GUIDE_DIAMETER,
+                spec["lift_travel"],
+                spec["party_axis_z"],
+            )
+            objects.append(add_feature(
+                doc, group, guide,
+                "MECH_Arm%d_Guide%d" % (arm_index, guide_index),
+                "Arm %d synchronized vertical guide %d" % (arm_index, guide_index),
+                COLORS["MECHANISM"], "MECHANISM",
+                function="party arm vertical guide", transparency=20,
+            ))
+            stored_lock = cylinder_at(
+                x,
+                y,
+                Geometry.PARTY_GUIDE_DIAMETER + 20.0,
+                Geometry.PARTY_LOCK_PIN_DIAMETER,
+                spec["stored_axis_z"] - Geometry.PARTY_LOCK_PIN_DIAMETER / 2.0,
+            )
+            objects.append(add_feature(
+                doc, group, stored_lock,
+                "MECH_Arm%d_StoredLock%d" % (arm_index, guide_index),
+                "Arm %d stored-position lock %d - POSITION plus LOCK sensing" % (
+                    arm_index, guide_index,
+                ),
+                COLORS["LOCK"], "MECHANISM",
+                function="party arm stored mechanical lock",
+            ))
+        start_x, start_y = spec["axis_start"]
+        end_x, end_y = spec["axis_end"]
+        axis = cylinder_between(
+            (start_x, start_y, spec["stored_axis_z"]),
+            (end_x, end_y, spec["stored_axis_z"]),
+            Geometry.PARTY_ARM_AXIS_DIAMETER,
+        )
+        objects.append(add_feature(
+            doc, group, axis,
+            "MECH_Arm%d_RotationAxis" % arm_index,
+            "Arm %d longitudinal rotation axis" % arm_index,
+            COLORS["MECHANISM"], "MECHANISM",
+            function="party arm rotation axis",
+        ))
+        for lock_index, (x, y) in enumerate(spec["party_lock_points"], 1):
+            lock = cylinder_at(
+                x, y, Geometry.PARTY_LOCK_PIN_DIAMETER,
+                PARTY_COVER_THICKNESS, PARTY_SUPPORT_HEIGHT,
+            )
+            objects.append(add_feature(
+                doc, group, lock,
+                "MECH_Arm%d_PartyLock%d" % (arm_index, lock_index),
+                "Arm %d Party lock %d - POSITION plus LOCK sensing" % (
+                    arm_index, lock_index,
+                ),
+                COLORS["LOCK"], "MECHANISM",
+                function="party arm mechanical lock",
+            ))
+
+    central = Geometry.central_party_mechanism()
+    for guide_index, (x, y) in enumerate(central["guide_points"], 1):
+        guide = cylinder_at(
+            x,
+            y,
+            Geometry.PARTY_GUIDE_DIAMETER,
+            central["lift_travel"],
+            central["party_center_z"],
+        )
+        objects.append(add_feature(
+            doc, group, guide,
+            "MECH_CentralGuide%d" % guide_index,
+            "Central module synchronized telescopic guide %d" % guide_index,
+            COLORS["MECHANISM"], "MECHANISM",
+            function="central party vertical guide", transparency=20,
+        ))
+        stored_lock = cylinder_at(
+            x,
+            y,
+            Geometry.PARTY_GUIDE_DIAMETER + 20.0,
+            Geometry.PARTY_LOCK_PIN_DIAMETER,
+            central["stored_center_z"] - Geometry.PARTY_LOCK_PIN_DIAMETER / 2.0,
+        )
+        objects.append(add_feature(
+            doc, group, stored_lock,
+            "MECH_CentralStoredLock%d" % guide_index,
+            "Central stored-position lock %d - POSITION plus LOCK sensing" % guide_index,
+            COLORS["LOCK"], "MECHANISM",
+            function="central stored mechanical lock",
+        ))
+        lock = cylinder_at(
+            x, y, Geometry.PARTY_LOCK_PIN_DIAMETER,
+            PARTY_COVER_THICKNESS, PARTY_SUPPORT_HEIGHT,
+        )
+        objects.append(add_feature(
+            doc, group, lock,
+            "MECH_CentralPartyLock%d" % guide_index,
+            "Central Party lock %d - POSITION plus LOCK sensing" % guide_index,
+            COLORS["LOCK"], "MECHANISM",
+            function="central party mechanical lock",
+        ))
     return objects
 
 
@@ -687,6 +812,10 @@ def add_document_parameters(doc):
         ("PartySupportHeight", PARTY_SUPPORT_HEIGHT),
         ("PartyPartitionBottomHeight", PARTY_PARTITION_BOTTOM_HEIGHT),
         ("CentralPartyStorageHeight", CENTRAL_PARTY_STORAGE_HEIGHT),
+        ("PartyArmAxisDiameter", Geometry.PARTY_ARM_AXIS_DIAMETER),
+        ("PartyGuideDiameter", Geometry.PARTY_GUIDE_DIAMETER),
+        ("PartyLockPinDiameter", Geometry.PARTY_LOCK_PIN_DIAMETER),
+        ("CentralPartyGuideRadius", Geometry.CENTRAL_PARTY_GUIDE_RADIUS),
         ("ServiceHeight", SERVICE_HEIGHT),
         ("SoftwareLiftMin", COL_SW_MIN),
         ("SoftwareLiftMax", COL_SW_MAX),
@@ -813,6 +942,22 @@ def write_design_reports(cad_collisions, storage_collisions):
             "static_pose_status": "pass" if not storage_collisions else "fail",
             "kinematic_validation_status": "open",
         },
+        "party_mechanisms": {
+            "arm_concept": "two synchronized vertical carriages plus longitudinal 90 degree axis",
+            "central_concept": "three synchronized telescopic vertical guides without rotation",
+            "arm_axis_diameter": Geometry.PARTY_ARM_AXIS_DIAMETER,
+            "guide_diameter": Geometry.PARTY_GUIDE_DIAMETER,
+            "lock_pin_diameter": Geometry.PARTY_LOCK_PIN_DIAMETER,
+            "arm_lift_travel": Geometry.party_arm_mechanism(60.0)["lift_travel"],
+            "central_lift_travel": Geometry.central_party_mechanism()["lift_travel"],
+            "party_lock_count_per_arm": 4,
+            "stored_lock_count_per_arm": 2,
+            "central_party_lock_count": 3,
+            "position_confirmation": "independent position sensor required",
+            "lock_confirmation": "independent lock sensor required",
+            "load_validation_status": "open",
+            "motion_validation_status": "open",
+        },
         "monitor_lift_desk_collisions": [list(item) for item in monitor_lift_desk_collisions],
         "monitor_body_desk_collisions": [list(item) for item in monitor_body_desk_collisions],
         "monitor_body_collisions": [list(item) for item in monitor_body_collisions],
@@ -902,6 +1047,7 @@ def build_island():
 
     params = add_document_parameters(doc)
     grp_structure = add_group(doc, None, "STRUCTURE", "00 - STATIC STRUCTURE")
+    grp_mechanisms = add_group(doc, None, "PARTY_MECHANISMS", "05 - PARTY GUIDES / AXES / LOCKS")
     grp_work = add_group(doc, None, "WORK_MODE", "10 - WORK MODE (default)")
     grp_party = add_group(doc, None, "PARTY_MODE", "20 - PARTY MODE")
     grp_service = add_group(doc, None, "SERVICE_MODE", "30 - SERVICE MODE (provisional)")
@@ -909,6 +1055,7 @@ def build_island():
     grp_env = add_group(doc, None, "MOTION_ENVELOPES", "90 - MOTION ENVELOPES")
 
     static_objects = build_static_structure(doc, grp_structure)
+    mechanism_objects = build_party_mechanisms(doc, grp_mechanisms)
     work_objects = build_work_mode(doc, grp_work)
     party_objects = build_party_mode(doc, grp_party)
     service_objects = build_service_mode(doc, grp_service)
@@ -919,6 +1066,7 @@ def build_island():
 
     set_visibility(params, False)
     set_visibility(grp_structure, True)
+    set_visibility(grp_mechanisms, False)
     set_visibility(grp_work, True)
     set_visibility(grp_party, False)
     set_visibility(grp_service, False)
@@ -929,6 +1077,7 @@ def build_island():
     return {
         "doc": doc,
         "static": static_objects,
+        "mechanisms": mechanism_objects,
         "work": work_objects,
         "party": party_objects,
         "service": service_objects,

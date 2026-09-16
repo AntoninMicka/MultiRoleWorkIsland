@@ -35,6 +35,10 @@ PARAMETER_SPECS = (
     ("party_module_thickness", "Tloušťka Party", 40.0, 15.0, 100.0, "mm", "Tloušťka horních party modulů."),
     ("party_partition_bottom_height", "Spodek uložené přepážky", 780.0, 760.0, 1200.0, "mm", "Spodní hrana svislého ramenního modulu ve Work."),
     ("party_storage_vertical_clearance", "Svislá mezera uložených modulů", 20.0, 20.0, 300.0, "mm", "Mezera mezi horní hranou přepážek a centrálním modulem."),
+    ("party_arm_axis_diameter", "Průměr otočné osy ramene", 40.0, 20.0, 100.0, "mm", "Koncepční průměr podélné osy ramenního modulu."),
+    ("party_guide_diameter", "Průměr vedení Party", 50.0, 25.0, 120.0, "mm", "Koncepční obálka svislých vedení party mechanismů."),
+    ("party_lock_pin_diameter", "Průměr zámku Party", 16.0, 8.0, 40.0, "mm", "Koncepční průměr mechanických zajišťovacích čepů."),
+    ("central_party_guide_radius", "Roztečný poloměr vedení středu", 140.0, 80.0, 250.0, "mm", "Poloha tří vedení centrálního modulu uvnitř technického jádra."),
 )
 
 DEFAULTS = {spec[0]: spec[2] for spec in PARAMETER_SPECS}
@@ -70,6 +74,10 @@ def validate_parameters(values):
         )
     if values["party_module_thickness"] >= values["party_surface_height"]:
         errors.append("Tloušťka party modulu musí být menší než jeho horní výška.")
+    if values["party_arm_axis_diameter"] > values["technical_channel_width"]:
+        errors.append("Otočná osa ramene se nevejde do technologického kanálu.")
+    if values["party_guide_diameter"] > values["technical_channel_width"]:
+        errors.append("Vedení Party se nevejde do technologického kanálu.")
     return errors
 
 

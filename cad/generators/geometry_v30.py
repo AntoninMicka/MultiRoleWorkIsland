@@ -49,6 +49,8 @@ def apply_parameters(parameters):
     global PARTY_MODULE_THICKNESS, PARTY_SURFACE_HEIGHT
     global PARTY_PARTITION_BOTTOM_HEIGHT, PARTY_STORAGE_VERTICAL_CLEARANCE
     global CENTRAL_PARTY_STORAGE_HEIGHT
+    global PARTY_ARM_AXIS_DIAMETER, PARTY_GUIDE_DIAMETER
+    global PARTY_LOCK_PIN_DIAMETER, CENTRAL_PARTY_GUIDE_RADIUS
 
     PARAMETERS = dict(values)
     USER_EDGE_WIDTH = values["user_edge_width"]
@@ -91,6 +93,10 @@ def apply_parameters(parameters):
         + 2.0 * WORK_DEPTH
         + PARTY_STORAGE_VERTICAL_CLEARANCE
     )
+    PARTY_ARM_AXIS_DIAMETER = values["party_arm_axis_diameter"]
+    PARTY_GUIDE_DIAMETER = values["party_guide_diameter"]
+    PARTY_LOCK_PIN_DIAMETER = values["party_lock_pin_diameter"]
+    CENTRAL_PARTY_GUIDE_RADIUS = values["central_party_guide_radius"]
     return dict(values)
 
 
@@ -541,6 +547,52 @@ def party_storage_ranges():
             CENTRAL_PARTY_STORAGE_HEIGHT,
             CENTRAL_PARTY_STORAGE_HEIGHT + PARTY_MODULE_THICKNESS,
         ),
+    }
+
+
+def party_arm_mechanism(arm_angle):
+    """Return plan points and heights for one lift-and-rotate arm mechanism."""
+    seam_radius, length, half_width = party_arm_dimensions()
+    party_axis_z = PARTY_SURFACE_HEIGHT - PARTY_MODULE_THICKNESS / 2.0
+    stored_axis_z = PARTY_PARTITION_BOTTOM_HEIGHT + half_width
+    guide_points = (
+        local_to_world(seam_radius, 0.0, arm_angle),
+        local_to_world(seam_radius + length, 0.0, arm_angle),
+    )
+    lock_inset = min(80.0, length / 5.0)
+    party_locks = tuple(
+        local_to_world(radial, tangential, arm_angle)
+        for radial in (seam_radius + lock_inset, seam_radius + length - lock_inset)
+        for tangential in (-half_width + lock_inset, half_width - lock_inset)
+    )
+    return {
+        "guide_points": guide_points,
+        "axis_start": guide_points[0],
+        "axis_end": guide_points[1],
+        "party_axis_z": party_axis_z,
+        "stored_axis_z": stored_axis_z,
+        "rotation_degrees": 90.0,
+        "lift_travel": stored_axis_z - party_axis_z,
+        "party_lock_points": party_locks,
+        "stored_lock_count": 2,
+    }
+
+
+def central_party_mechanism():
+    """Return the three-point vertical guide concept for the central module."""
+    party_center_z = PARTY_SURFACE_HEIGHT - PARTY_MODULE_THICKNESS / 2.0
+    stored_center_z = CENTRAL_PARTY_STORAGE_HEIGHT + PARTY_MODULE_THICKNESS / 2.0
+    guide_points = tuple(
+        local_to_world(CENTRAL_PARTY_GUIDE_RADIUS, 0.0, angle)
+        for angle in (0.0, 120.0, 240.0)
+    )
+    return {
+        "guide_points": guide_points,
+        "party_center_z": party_center_z,
+        "stored_center_z": stored_center_z,
+        "lift_travel": stored_center_z - party_center_z,
+        "party_lock_points": guide_points,
+        "stored_lock_count": 3,
     }
 
 
