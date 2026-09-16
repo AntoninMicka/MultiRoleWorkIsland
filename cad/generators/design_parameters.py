@@ -39,6 +39,8 @@ PARAMETER_SPECS = (
     ("party_guide_diameter", "Průměr vedení Party", 50.0, 25.0, 120.0, "mm", "Koncepční obálka svislých vedení party mechanismů."),
     ("party_lock_pin_diameter", "Průměr zámku Party", 16.0, 8.0, 40.0, "mm", "Koncepční průměr mechanických zajišťovacích čepů."),
     ("central_party_guide_radius", "Roztečný poloměr vedení středu", 140.0, 80.0, 250.0, "mm", "Poloha tří vedení centrálního modulu uvnitř technického jádra."),
+    ("party_lift_sample_step", "Krok kontroly zdvihu Party", 50.0, 10.0, 200.0, "mm", "Největší rozestup kontrolovaných poloh při svislém pohybu."),
+    ("party_rotation_sample_step", "Krok kontroly rotace Party", 5.0, 1.0, 15.0, "deg", "Největší úhlový rozestup kontrolovaných poloh ramenního modulu."),
 )
 
 DEFAULTS = {spec[0]: spec[2] for spec in PARAMETER_SPECS}

@@ -48,3 +48,7 @@ party_guide_diameter = 50
 party_lock_pin_diameter = 16
 # Roztečný poloměr vedení středu [mm]
 central_party_guide_radius = 140
+# Krok kontroly zdvihu Party [mm]
+party_lift_sample_step = 50
+# Krok kontroly rotace Party [deg]
+party_rotation_sample_step = 5

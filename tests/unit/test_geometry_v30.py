@@ -127,8 +127,8 @@ def test_work_storage_uses_vertical_arm_partitions_and_overhead_central_module()
     ranges = geometry.party_storage_ranges()
     _seam_radius, length, half_width = geometry.party_arm_dimensions()
     assert ranges["arm"] == (780.0, 1880.0)
-    assert ranges["central"] == (1900.0, 1940.0)
-    assert ranges["central"][0] - ranges["arm"][1] == 20.0
+    assert ranges["central"] == (1901.0, 1941.0)
+    assert ranges["central"][0] - ranges["arm"][1] == 21.0
     for arm_angle in (60.0, 180.0, 300.0):
         footprint = geometry.party_storage_arm_polygon(arm_angle)
         edge_lengths = sorted(
@@ -158,13 +158,29 @@ def test_central_party_mechanism_has_three_synchronized_guides_and_locks():
     assert len(spec["guide_points"]) == 3
     assert len(spec["party_lock_points"]) == 3
     assert spec["stored_lock_count"] == 3
-    assert spec["lift_travel"] == 1240.0
+    assert spec["lift_travel"] == 1241.0
     for point in spec["guide_points"]:
         assert math.isclose(
             geometry.distance((0.0, 0.0), point),
             geometry.CENTRAL_PARTY_GUIDE_RADIUS,
             abs_tol=1e-9,
         )
+
+
+def test_party_motion_sampling_includes_endpoints_with_bounded_steps():
+    samples = geometry.party_motion_sampling()
+    assert samples["central_lift"][0] == 0.0
+    assert samples["central_lift"][-1] == geometry.central_party_mechanism()["lift_travel"]
+    assert samples["arm_lift"][0] == 0.0
+    assert samples["arm_lift"][-1] == geometry.party_arm_mechanism(60.0)["lift_travel"]
+    assert samples["arm_rotation"][0] == 0.0
+    assert samples["arm_rotation"][-1] == 90.0
+    for values, maximum in (
+        (samples["central_lift"], geometry.PARTY_LIFT_SAMPLE_STEP),
+        (samples["arm_lift"], geometry.PARTY_LIFT_SAMPLE_STEP),
+        (samples["arm_rotation"], geometry.PARTY_ROTATION_SAMPLE_STEP),
+    ):
+        assert max(b - a for a, b in zip(values, values[1:])) <= maximum
 
 
 def test_party_svg_names_all_four_modules():

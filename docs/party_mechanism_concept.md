@@ -19,7 +19,9 @@ dokumentaci ani o potvrzení únosnosti, životnosti nebo funkční bezpečnosti
 - Modul zůstává vodorovný a pohybuje se pouze svisle.
 - Tři synchronizovaná teleskopická vedení jsou na roztečném poloměru 140 mm
   uvnitř centrálního technického jádra.
-- Střed modulu má mezi Party a Work uložením zdvih 1240 mm.
+- Střed modulu má mezi Party a Work uložením zdvih 1241 mm. Jeden milimetr navíc
+  kompenzuje radiální přesah rohů ramenní desky při rotaci a zachovává nejméně
+  20mm vůli od uloženého centrálního modulu.
 - Party polohu nesou tři mechanické zámky. Uložená poloha vyžaduje další tři
   mechanické zámky nezávislé na pohonu.
 
@@ -30,10 +32,21 @@ geometrické polohy a `LOCK` potvrzuje mechanické zajištění. Pohyb další o
 povolen až po shodě obou signálů. Při neshodě, ztrátě napájení nebo překročení
 synchronizační odchylky se pohyb zastaví a modul musí zůstat mechanicky držen.
 
+## Geometrická sekvence
+
+Přechod Party → Work nejprve zvedne centrální modul o 1241 mm. Každé rameno
+se potom samostatně zvedne o 650 mm a otočí o 90° do svislé polohy. Work → Party
+probíhá v opačném pořadí: rameno se otočí do vodorovné polohy, spustí na nosné
+zámky a centrální modul se spustí jako poslední.
+
+FreeCAD kontrola používá 119 skutečných poloh těles s krokem nejvýše 50 mm a
+5°. Navíc kontroluje spojité přesné hranoly svislých zdvihů a konzervativní
+válcovou obálku celé rotace. Obě kontroly prošly bez objemové kolize; minimální
+vůle rotační obálky k centrálnímu modulu je 20,64 mm. Výsledek dokládá
+geometrickou průchodnost, nikoliv dynamiku, průhyb ani bezpečnost pohonů.
+
 ## Otevřené ověření
 
-- přesné nekonvexní pohybové obálky pro zdvih a rotaci,
-- kolize během pohybu, nikoli pouze v koncových polohách,
 - dimenzování osy, ložisek, vozíků, pohonů, brzd a zámků,
 - průhyb a stabilita velkého centrálního modulu,
 - servisní přístup, nouzové ruční spuštění a zachycení při poruše.

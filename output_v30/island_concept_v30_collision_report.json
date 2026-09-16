@@ -113,7 +113,7 @@
   "party_layer": {
     "coverage_failures": [],
     "height_valid": true,
-    "kinematic_validation_status": "open",
+    "kinematic_validation_status": "pass-conservative-envelope",
     "module_collisions": [],
     "module_count": 4,
     "module_names": [
@@ -133,16 +133,27 @@
     "arm_concept": "two synchronized vertical carriages plus longitudinal 90 degree axis",
     "arm_lift_travel": 650.0,
     "central_concept": "three synchronized telescopic vertical guides without rotation",
-    "central_lift_travel": 1240.0,
+    "central_lift_travel": 1241.0,
     "central_party_lock_count": 3,
     "guide_diameter": 50.0,
     "load_validation_status": "open",
     "lock_confirmation": "independent lock sensor required",
     "lock_pin_diameter": 16.0,
-    "motion_validation_status": "open",
+    "motion_validation_status": "pass-conservative-envelope",
     "party_lock_count_per_arm": 4,
     "position_confirmation": "independent position sensor required",
     "stored_lock_count_per_arm": 2
+  },
+  "party_motion": {
+    "collision_failures": [],
+    "continuous_envelope_failures": [],
+    "continuous_validation_status": "pass-conservative-envelope",
+    "frame_count": 119,
+    "linear_step_max": 50.0,
+    "rotation_step_max": 5.0,
+    "rotation_to_central_clearance": 20.636483767319532,
+    "sampled_validation_status": "pass",
+    "sequence": "central lift; each arm lift then rotate; reverse for Work to Party"
   },
   "party_storage": {
     "arm_count": 3,
@@ -151,11 +162,11 @@
       1880.0
     ],
     "central_z_range": [
-      1900.0,
-      1940.0
+      1901.0,
+      1941.0
     ],
     "concept": "vertical arm partitions plus overhead central module",
-    "kinematic_validation_status": "open",
+    "kinematic_validation_status": "pass-conservative-envelope",
     "static_collisions": [],
     "static_pose_status": "pass"
   },

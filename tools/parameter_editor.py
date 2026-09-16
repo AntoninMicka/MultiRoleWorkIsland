@@ -33,6 +33,11 @@ def derived_values(values):
     primary_rear_width = 4.0 * (
         arm_sine * primary_inner_radius - values["technical_channel_width"] / 2.0
     )
+    party_half_width = values["technical_channel_width"] / 2.0 + values["primary_depth"]
+    rotation_overshoot = math.ceil(
+        math.hypot(party_half_width, values["party_module_thickness"] / 2.0)
+        - party_half_width
+    )
     return {
         "Šířka S/T = hloubka P": values["primary_depth"],
         "Pracovní šířka ramene = kanál + 2× hloubka": (
@@ -73,7 +78,9 @@ def derived_values(values):
             + values["technical_channel_width"]
             + 2.0 * values["primary_depth"]
             + values["party_storage_vertical_clearance"]
+            + rotation_overshoot
         ),
+        "Přesah obálky při rotaci": rotation_overshoot,
         "Zdvih osy ramenního modulu": (
             values["party_partition_bottom_height"]
             + (values["technical_channel_width"] + 2.0 * values["primary_depth"]) / 2.0
@@ -85,6 +92,7 @@ def derived_values(values):
             + values["technical_channel_width"]
             + 2.0 * values["primary_depth"]
             + values["party_storage_vertical_clearance"]
+            + rotation_overshoot
             - values["party_surface_height"]
             + values["party_module_thickness"]
         ),

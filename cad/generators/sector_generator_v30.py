@@ -364,6 +364,230 @@ def vertical_bounding_envelope(shape, z_min, z_max):
     )
 
 
+def party_arm_pose(arm_angle, lift=0.0, rotation=0.0):
+    """Return the real arm-module solid at one sampled kinematic pose."""
+    shape = polygon_prism(
+        Geometry.party_arm_polygon(arm_angle),
+        PARTY_COVER_THICKNESS,
+        PARTY_SUPPORT_HEIGHT,
+    )
+    if lift:
+        shape.translate(App.Vector(0.0, 0.0, lift))
+    if rotation:
+        spec = Geometry.party_arm_mechanism(arm_angle)
+        axis_x, axis_y = spec["axis_start"]
+        radians = math.radians(arm_angle)
+        shape.rotate(
+            App.Vector(axis_x, axis_y, spec["party_axis_z"] + lift),
+            App.Vector(math.cos(radians), math.sin(radians), 0.0),
+            rotation,
+        )
+    return shape
+
+
+def central_party_pose(lift=0.0):
+    shape = polygon_prism(
+        Geometry.central_party_polygon(),
+        PARTY_COVER_THICKNESS,
+        PARTY_SUPPORT_HEIGHT,
+    )
+    if lift:
+        shape.translate(App.Vector(0.0, 0.0, lift))
+    return shape
+
+
+def party_arm_rotation_envelope(arm_angle):
+    """Return a continuous conservative radial envelope for the 0-90° turn."""
+    spec = Geometry.party_arm_mechanism(arm_angle)
+    half_width = Geometry.party_arm_dimensions()[2]
+    radius = math.hypot(half_width, PARTY_COVER_THICKNESS / 2.0)
+    start_x, start_y = spec["axis_start"]
+    end_x, end_y = spec["axis_end"]
+    return cylinder_between(
+        (start_x, start_y, spec["stored_axis_z"]),
+        (end_x, end_y, spec["stored_axis_z"]),
+        radius * 2.0,
+    )
+
+
+def parked_monitor_shape(kind, station_angle):
+    """Conservative parked body kept below the transformation worktops."""
+    _angle, _center_x, _center_y, width = monitor_location(kind, station_angle)
+    lift_x, lift_y = Geometry.monitor_lift_position(kind, station_angle)
+    parked_top = PARTY_SUPPORT_HEIGHT - DESK_THICKNESS - 20.0
+    return oriented_box_center(
+        MONITOR_THICKNESS,
+        width,
+        MONITOR_HEIGHT,
+        lift_x,
+        lift_y,
+        parked_top - MONITOR_HEIGHT,
+        _angle,
+    )
+
+
+def _bounding_boxes_overlap(shape_a, shape_b, tolerance=1e-7):
+    a = shape_a.BoundBox
+    b = shape_b.BoundBox
+    return not (
+        a.XMax <= b.XMin + tolerance or b.XMax <= a.XMin + tolerance
+        or a.YMax <= b.YMin + tolerance or b.YMax <= a.YMin + tolerance
+        or a.ZMax <= b.ZMin + tolerance or b.ZMax <= a.ZMin + tolerance
+    )
+
+
+def _positive_common_volume(shape_a, shape_b):
+    if not _bounding_boxes_overlap(shape_a, shape_b):
+        return 0.0
+    common = shape_a.common(shape_b)
+    if common.isNull():
+        return 0.0
+    return common.Volume
+
+
+def validate_party_motion():
+    """Check exact solids at every configured lift/rotation sample."""
+    arm_angles = (60.0, 180.0, 300.0)
+    arm_specs = [Geometry.party_arm_mechanism(angle) for angle in arm_angles]
+    central_spec = Geometry.central_party_mechanism()
+    sampling = Geometry.party_motion_sampling()
+    obstacles = []
+    for station, station_angle in STATIONS:
+        for kind in ("P", "S", "T"):
+            obstacles.append((
+                "DESK_%s%s" % (station, kind),
+                desk_shape(kind, station_angle, PARTY_SUPPORT_HEIGHT),
+            ))
+            obstacles.append((
+                "PARKED_MONITOR_%s%s" % (station, kind),
+                parked_monitor_shape(kind, station_angle),
+            ))
+
+    frames = []
+    arm_states = [(0.0, 0.0) for _ in arm_angles]
+    for lift in sampling["central_lift"]:
+        frames.append(("central-lift-%.3f" % lift, lift, tuple(arm_states)))
+    central_lift = central_spec["lift_travel"]
+    for arm_index, spec in enumerate(arm_specs):
+        for lift in sampling["arm_lift"][1:]:
+            next_states = list(arm_states)
+            next_states[arm_index] = (lift, 0.0)
+            frames.append((
+                "arm-%d-lift-%.3f" % (arm_index + 1, lift),
+                central_lift,
+                tuple(next_states),
+            ))
+        arm_states[arm_index] = (spec["lift_travel"], 0.0)
+        for rotation in sampling["arm_rotation"][1:]:
+            next_states = list(arm_states)
+            next_states[arm_index] = (spec["lift_travel"], rotation)
+            frames.append((
+                "arm-%d-rotate-%.3f" % (arm_index + 1, rotation),
+                central_lift,
+                tuple(next_states),
+            ))
+        arm_states[arm_index] = (spec["lift_travel"], 90.0)
+
+    failures = []
+    for frame_name, central_lift, states in frames:
+        modules = [("CENTRAL_TOP", central_party_pose(central_lift))]
+        for arm_index, (arm_angle, state) in enumerate(zip(arm_angles, states), 1):
+            modules.append((
+                "PARTY_ARM_%d" % arm_index,
+                party_arm_pose(arm_angle, state[0], state[1]),
+            ))
+        for module_index, (name_a, shape_a) in enumerate(modules):
+            for name_b, shape_b in modules[module_index + 1:]:
+                volume = _positive_common_volume(shape_a, shape_b)
+                if volume > 1e-5:
+                    failures.append({
+                        "frame": frame_name,
+                        "object_a": name_a,
+                        "object_b": name_b,
+                        "volume": volume,
+                    })
+            for obstacle_name, obstacle_shape in obstacles:
+                volume = _positive_common_volume(shape_a, obstacle_shape)
+                if volume > 1e-5:
+                    failures.append({
+                        "frame": frame_name,
+                        "object_a": name_a,
+                        "object_b": obstacle_name,
+                        "volume": volume,
+                    })
+    arm_half_width = Geometry.party_arm_dimensions()[2]
+    rotation_radius = math.hypot(arm_half_width, PARTY_COVER_THICKNESS / 2.0)
+    rotation_clearance = (
+        CENTRAL_PARTY_STORAGE_HEIGHT
+        - (arm_specs[0]["stored_axis_z"] + rotation_radius)
+    )
+    envelope_failures = []
+
+    def check_envelope(stage, moving_name, moving_shape, stationary):
+        for stationary_name, stationary_shape in stationary:
+            volume = _positive_common_volume(moving_shape, stationary_shape)
+            if volume > 1e-5:
+                envelope_failures.append({
+                    "stage": stage,
+                    "moving": moving_name,
+                    "stationary": stationary_name,
+                    "volume": volume,
+                })
+
+    horizontal_arms = [
+        ("PARTY_ARM_%d" % (index + 1), party_arm_pose(angle))
+        for index, angle in enumerate(arm_angles)
+    ]
+    central_sweep = polygon_prism(
+        Geometry.central_party_polygon(),
+        PARTY_COVER_THICKNESS + central_spec["lift_travel"],
+        PARTY_SUPPORT_HEIGHT,
+    )
+    check_envelope(
+        "central-lift", "CENTRAL_TOP", central_sweep,
+        horizontal_arms + obstacles,
+    )
+    final_arm_shapes = []
+    for arm_index, (arm_angle, spec) in enumerate(zip(arm_angles, arm_specs), 1):
+        later_horizontal = horizontal_arms[arm_index:]
+        central_stored = [("CENTRAL_TOP", central_party_pose(central_spec["lift_travel"]))]
+        lift_sweep = polygon_prism(
+            Geometry.party_arm_polygon(arm_angle),
+            PARTY_COVER_THICKNESS + spec["lift_travel"],
+            PARTY_SUPPORT_HEIGHT,
+        )
+        stationary = central_stored + final_arm_shapes + later_horizontal + obstacles
+        check_envelope(
+            "arm-%d-lift" % arm_index,
+            "PARTY_ARM_%d" % arm_index,
+            lift_sweep,
+            stationary,
+        )
+        check_envelope(
+            "arm-%d-rotate" % arm_index,
+            "PARTY_ARM_%d" % arm_index,
+            party_arm_rotation_envelope(arm_angle),
+            stationary,
+        )
+        final_arm_shapes.append((
+            "PARTY_ARM_%d" % arm_index,
+            party_arm_pose(arm_angle, spec["lift_travel"], 90.0),
+        ))
+    return {
+        "sequence": "central lift; each arm lift then rotate; reverse for Work to Party",
+        "frame_count": len(frames),
+        "linear_step_max": Geometry.PARTY_LIFT_SAMPLE_STEP,
+        "rotation_step_max": Geometry.PARTY_ROTATION_SAMPLE_STEP,
+        "rotation_to_central_clearance": rotation_clearance,
+        "collision_failures": failures,
+        "sampled_validation_status": "pass" if not failures else "fail",
+        "continuous_envelope_failures": envelope_failures,
+        "continuous_validation_status": (
+            "pass-conservative-envelope" if not envelope_failures else "inconclusive"
+        ),
+    }
+
+
 # =============================================================================
 # DOCUMENT HELPERS
 # =============================================================================
@@ -767,8 +991,44 @@ def build_motion_envelopes(doc, group):
                 COLORS["DISPLAY"], "ENVELOPE", station, "%s monitor travel" % kind, 86,
             ))
 
-    # Exact party-module sweeps replace the old conservative boxes only after
-    # storage poses and hinge/guide axes are selected.
+    # Exact translational sweeps preserve each module footprint. Rotation is
+    # visualized as a compound of the actual solid at every validated angle.
+    central = Geometry.central_party_mechanism()
+    central_sweep = polygon_prism(
+        Geometry.central_party_polygon(),
+        PARTY_COVER_THICKNESS + central["lift_travel"],
+        PARTY_SUPPORT_HEIGHT,
+    )
+    objects.append(add_feature(
+        doc, group, central_sweep,
+        "ENV_PARTY_CentralLift",
+        "Central party module exact vertical sweep",
+        COLORS["ENVELOPE"], "ENVELOPE", function="central party lift sweep", transparency=88,
+    ))
+    sampling = Geometry.party_motion_sampling()
+    for arm_index, arm_angle in enumerate((60.0, 180.0, 300.0), 1):
+        spec = Geometry.party_arm_mechanism(arm_angle)
+        lift_sweep = polygon_prism(
+            Geometry.party_arm_polygon(arm_angle),
+            PARTY_COVER_THICKNESS + spec["lift_travel"],
+            PARTY_SUPPORT_HEIGHT,
+        )
+        objects.append(add_feature(
+            doc, group, lift_sweep,
+            "ENV_PARTY_Arm%d_Lift" % arm_index,
+            "Arm %d exact vertical lift sweep" % arm_index,
+            COLORS["ENVELOPE"], "ENVELOPE", function="party arm lift sweep", transparency=90,
+        ))
+        rotation_poses = [
+            party_arm_pose(arm_angle, spec["lift_travel"], angle)
+            for angle in sampling["arm_rotation"]
+        ]
+        objects.append(add_feature(
+            doc, group, Part.makeCompound(rotation_poses),
+            "ENV_PARTY_Arm%d_RotationSamples" % arm_index,
+            "Arm %d exact sampled rotation poses" % arm_index,
+            COLORS["ENVELOPE"], "ENVELOPE", function="party arm rotation samples", transparency=91,
+        ))
     return objects
 
 
@@ -867,7 +1127,7 @@ def cad_party_storage_collision_pairs(work_objects):
     return collisions
 
 
-def write_design_reports(cad_collisions, storage_collisions):
+def write_design_reports(cad_collisions, storage_collisions, party_motion):
     """Write reviewable plan and collision evidence next to CAD artifacts."""
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     plan_collisions = Geometry.collision_pairs()
@@ -908,6 +1168,8 @@ def write_design_reports(cad_collisions, storage_collisions):
         side_lift_channel_clearance < 0.0,
         cad_collisions,
         storage_collisions,
+        party_motion["collision_failures"],
+        party_motion["continuous_envelope_failures"],
         monitor_lift_desk_collisions,
         monitor_body_desk_collisions,
         monitor_body_collisions,
@@ -940,7 +1202,7 @@ def write_design_reports(cad_collisions, storage_collisions):
                 for item in storage_collisions
             ],
             "static_pose_status": "pass" if not storage_collisions else "fail",
-            "kinematic_validation_status": "open",
+            "kinematic_validation_status": party_motion["continuous_validation_status"],
         },
         "party_mechanisms": {
             "arm_concept": "two synchronized vertical carriages plus longitudinal 90 degree axis",
@@ -956,8 +1218,9 @@ def write_design_reports(cad_collisions, storage_collisions):
             "position_confirmation": "independent position sensor required",
             "lock_confirmation": "independent lock sensor required",
             "load_validation_status": "open",
-            "motion_validation_status": "open",
+            "motion_validation_status": party_motion["continuous_validation_status"],
         },
+        "party_motion": party_motion,
         "monitor_lift_desk_collisions": [list(item) for item in monitor_lift_desk_collisions],
         "monitor_body_desk_collisions": [list(item) for item in monitor_body_desk_collisions],
         "monitor_body_collisions": [list(item) for item in monitor_body_collisions],
@@ -972,7 +1235,7 @@ def write_design_reports(cad_collisions, storage_collisions):
             "thickness": PARTY_COVER_THICKNESS,
             "height_valid": party_height_valid,
             "storage_pose_status": "concept-selected",
-            "kinematic_validation_status": "open",
+            "kinematic_validation_status": party_motion["continuous_validation_status"],
         },
         "adjacent_frame_gaps": frame_gaps,
         "frame_gap_violations": [list(item) for item in gap_violations],
@@ -1093,6 +1356,7 @@ def main():
     write_design_reports(
         cad_desk_collision_pairs(built["work"]),
         cad_party_storage_collision_pairs(built["work"]),
+        validate_party_motion(),
     )
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 

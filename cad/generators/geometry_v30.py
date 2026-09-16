@@ -51,6 +51,8 @@ def apply_parameters(parameters):
     global CENTRAL_PARTY_STORAGE_HEIGHT
     global PARTY_ARM_AXIS_DIAMETER, PARTY_GUIDE_DIAMETER
     global PARTY_LOCK_PIN_DIAMETER, CENTRAL_PARTY_GUIDE_RADIUS
+    global PARTY_LIFT_SAMPLE_STEP, PARTY_ROTATION_SAMPLE_STEP
+    global PARTY_ROTATION_OVERSHOOT
 
     PARAMETERS = dict(values)
     USER_EDGE_WIDTH = values["user_edge_width"]
@@ -87,16 +89,24 @@ def apply_parameters(parameters):
     PARTY_SURFACE_HEIGHT = values["party_surface_height"]
     PARTY_PARTITION_BOTTOM_HEIGHT = values["party_partition_bottom_height"]
     PARTY_STORAGE_VERTICAL_CLEARANCE = values["party_storage_vertical_clearance"]
+    party_half_width = TECH_CHANNEL_WIDTH / 2.0 + WORK_DEPTH
+    PARTY_ROTATION_OVERSHOOT = math.ceil(
+        math.hypot(party_half_width, PARTY_MODULE_THICKNESS / 2.0)
+        - party_half_width
+    )
     CENTRAL_PARTY_STORAGE_HEIGHT = (
         PARTY_PARTITION_BOTTOM_HEIGHT
         + TECH_CHANNEL_WIDTH
         + 2.0 * WORK_DEPTH
         + PARTY_STORAGE_VERTICAL_CLEARANCE
+        + PARTY_ROTATION_OVERSHOOT
     )
     PARTY_ARM_AXIS_DIAMETER = values["party_arm_axis_diameter"]
     PARTY_GUIDE_DIAMETER = values["party_guide_diameter"]
     PARTY_LOCK_PIN_DIAMETER = values["party_lock_pin_diameter"]
     CENTRAL_PARTY_GUIDE_RADIUS = values["central_party_guide_radius"]
+    PARTY_LIFT_SAMPLE_STEP = values["party_lift_sample_step"]
+    PARTY_ROTATION_SAMPLE_STEP = values["party_rotation_sample_step"]
     return dict(values)
 
 
@@ -593,6 +603,23 @@ def central_party_mechanism():
         "lift_travel": stored_center_z - party_center_z,
         "party_lock_points": guide_points,
         "stored_lock_count": 3,
+    }
+
+
+def motion_samples(distance_or_angle, maximum_step):
+    """Return endpoints and evenly spaced intermediate values for a motion."""
+    count = max(1, int(math.ceil(float(distance_or_angle) / maximum_step)))
+    return tuple(distance_or_angle * index / count for index in range(count + 1))
+
+
+def party_motion_sampling():
+    """Return the configured discrete validation grid for the Party sequence."""
+    arm = party_arm_mechanism(60.0)
+    central = central_party_mechanism()
+    return {
+        "central_lift": motion_samples(central["lift_travel"], PARTY_LIFT_SAMPLE_STEP),
+        "arm_lift": motion_samples(arm["lift_travel"], PARTY_LIFT_SAMPLE_STEP),
+        "arm_rotation": motion_samples(90.0, PARTY_ROTATION_SAMPLE_STEP),
     }
 
 
