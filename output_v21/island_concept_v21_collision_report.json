@@ -1,0 +1,96 @@
+{
+  "cad_collisions": [],
+  "desk_count": 9,
+  "ergonomics": {
+    "chair_depth": 420.0,
+    "chair_width": 470.0,
+    "entry_corridor_width": 800.0,
+    "legroom_depth": 400.0,
+    "legroom_width": 600.0,
+    "primary_column_legroom_clearance": 22.5
+  },
+  "model": "island_concept_v21",
+  "monitor_poses": {
+    "AP": {
+      "facing_angle": 0.0,
+      "half_angular_span": 18.97888,
+      "sight_angle": 180.0,
+      "viewing_distance": 945.0,
+      "x": 695.0,
+      "y": 0.0
+    },
+    "AS": {
+      "facing_angle": -48.055303,
+      "half_angular_span": 16.133703,
+      "sight_angle": 131.944697,
+      "viewing_distance": 967.945421,
+      "x": 993.012702,
+      "y": 719.948452
+    },
+    "AT": {
+      "facing_angle": 48.055303,
+      "half_angular_span": 16.133703,
+      "sight_angle": -131.944697,
+      "viewing_distance": 967.945421,
+      "x": 993.012702,
+      "y": -719.948452
+    },
+    "BP": {
+      "facing_angle": 120.0,
+      "half_angular_span": 18.97888,
+      "sight_angle": -60.0,
+      "viewing_distance": 945.0,
+      "x": -347.5,
+      "y": 601.887656
+    },
+    "BS": {
+      "facing_angle": 71.944697,
+      "half_angular_span": 16.133703,
+      "sight_angle": -108.055303,
+      "viewing_distance": 967.945421,
+      "x": -1120.0,
+      "y": 500.0
+    },
+    "BT": {
+      "facing_angle": 168.055303,
+      "half_angular_span": 16.133703,
+      "sight_angle": -11.944697,
+      "viewing_distance": 967.945421,
+      "x": 126.987298,
+      "y": 1219.948452
+    },
+    "CP": {
+      "facing_angle": -120.0,
+      "half_angular_span": 18.97888,
+      "sight_angle": 60.0,
+      "viewing_distance": 945.0,
+      "x": -347.5,
+      "y": -601.887656
+    },
+    "CS": {
+      "facing_angle": -168.055303,
+      "half_angular_span": 16.133703,
+      "sight_angle": 11.944697,
+      "viewing_distance": 967.945421,
+      "x": 126.987298,
+      "y": -1219.948452
+    },
+    "CT": {
+      "facing_angle": -71.944697,
+      "half_angular_span": 16.133703,
+      "sight_angle": 108.055303,
+      "viewing_distance": 967.945421,
+      "x": -1120.0,
+      "y": -500.0
+    }
+  },
+  "parameters": {
+    "central_user_edge": 800.0,
+    "technical_channel_width": 400.0,
+    "usable_work_depth": 550.0,
+    "user_edge_width": 800.0
+  },
+  "plan_collisions": [],
+  "status": "pass",
+  "units": "mm"
+}

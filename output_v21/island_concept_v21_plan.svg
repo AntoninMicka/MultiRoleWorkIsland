@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000">
+<rect width="1000" height="1000" fill="#fafafa"/>
+<g stroke="#25313b" stroke-width="1.5" fill-opacity="0.60">
+<polygon id="desk-AP" points="640.80,577.00 761.80,588.00 761.80,412.00 640.80,423.00" fill="#3f8dd3"/>
+<polygon id="desk-AS" points="615.11,388.63 752.61,150.48 866.92,216.48 760.22,401.28" fill="#3db889"/>
+<polygon id="desk-AT" points="615.11,611.37 752.61,849.52 866.92,783.52 760.22,598.72" fill="#ed8b35"/>
+<polygon id="desk-BP" points="496.28,339.56 445.31,229.27 292.89,317.27 362.92,416.56" fill="#3f8dd3"/>
+<polygon id="desk-BS" points="346.00,456.00 71.00,456.00 71.00,324.00 284.40,324.00" fill="#3db889"/>
+<polygon id="desk-BT" points="538.89,344.63 676.39,106.48 562.08,40.48 455.38,225.28" fill="#ed8b35"/>
+<polygon id="desk-CP" points="362.92,583.44 292.89,682.73 445.31,770.73 496.28,660.44" fill="#3f8dd3"/>
+<polygon id="desk-CS" points="538.89,655.37 676.39,893.52 562.08,959.52 455.38,774.72" fill="#3db889"/>
+<polygon id="desk-CT" points="346.00,544.00 71.00,544.00 71.00,676.00 284.40,676.00" fill="#ed8b35"/>
+<g fill="none" stroke="#6b7280" stroke-dasharray="5 4">
+<polygon id="chair-A" points="814.60,551.70 907.00,551.70 907.00,448.30 814.60,448.30"/>
+<polygon id="entry-A" points="761.80,588.00 1014.80,588.00 1014.80,412.00 761.80,412.00"/>
+<polygon id="chair-B" points="387.47,201.70 341.27,121.68 251.73,173.38 297.93,253.40"/>
+<polygon id="entry-B" points="445.31,229.27 318.81,10.17 166.39,98.17 292.89,317.27"/>
+<polygon id="chair-C" points="297.93,746.60 251.73,826.62 341.27,878.32 387.47,798.30"/>
+<polygon id="entry-C" points="292.89,682.73 166.39,901.83 318.81,989.83 445.31,770.73"/>
+</g>
+<polygon id="central-party" points="352.71,579.12 505.13,667.12 642.17,588.00 642.17,412.00 505.13,332.88 352.71,420.88" fill="#e8bd45" stroke-dasharray="8 5"/>
+</g>
+<g font-family="sans-serif" font-size="15" fill="#1d2730" stroke="#1d2730" stroke-width="1">
+<line x1="412.00" y1="218.40" x2="588.00" y2="218.40"/>
+<text x="500" y="250" text-anchor="middle" stroke="none">user edge 800 mm</text>
+<line x1="500.00" y1="359.20" x2="500.00" y2="238.20"/>
+<text x="520" y="300" stroke="none">usable depth 550 mm</text>
+<text x="500" y="495" text-anchor="middle" stroke="none">technical channel 400 mm</text>
+</g>
+</svg>

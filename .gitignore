@@ -1,0 +1,9 @@
+# FreeCAD/Python local build state
+build/
+**/__pycache__/
+*.py[cod]
+*.FCBak
+
+# Editor and operating-system noise
+*~
+.DS_Store

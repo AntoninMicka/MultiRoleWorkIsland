@@ -17,9 +17,8 @@ Options:
   -h, --help          Show this help.
 
 Defaults:
-  GENERATOR   cad/generators/sector_generator_v2.py,
-              cad/sector_generator_v2.py, or sector_generator_v2.py
-  OUTPUT DIR  <project root>/output_v2
+  GENERATOR   cad/generators/sector_generator_v21.py, falling back to V2
+  OUTPUT DIR  <project root>/output_v21 for V2.1, otherwise output_v2
 
 Environment:
   FREECADCMD          Alternative to --freecadcmd.
@@ -41,6 +40,7 @@ if [[ "$(basename -- "$script_dir")" == "tools" ]]; then
 fi
 generator=""
 freecad_cmd="${FREECADCMD:-}"
+freecad_console_args=()
 output_dir=""
 open_after=0
 
@@ -82,7 +82,9 @@ while (($#)); do
 done
 
 if [[ -z "$generator" ]]; then
-    if [[ -f "$project_root/cad/generators/sector_generator_v2.py" ]]; then
+    if [[ -f "$project_root/cad/generators/sector_generator_v21.py" ]]; then
+        generator="$project_root/cad/generators/sector_generator_v21.py"
+    elif [[ -f "$project_root/cad/generators/sector_generator_v2.py" ]]; then
         generator="$project_root/cad/generators/sector_generator_v2.py"
     elif [[ -f "$project_root/cad/sector_generator_v2.py" ]]; then
         generator="$project_root/cad/sector_generator_v2.py"
@@ -96,6 +98,18 @@ fi
 [[ -f "$generator" ]] || die "Generator not found: $generator"
 generator_dir="$(CDPATH= cd -- "$(dirname -- "$generator")" && pwd -P)"
 generator="$generator_dir/$(basename -- "$generator")"
+generator_name="$(basename -- "$generator")"
+
+case "$generator_name" in
+    sector_generator_v21.py)
+        model_name="island_concept_v21"
+        default_output_name="output_v21"
+        ;;
+    *)
+        model_name="island_concept_v2"
+        default_output_name="output_v2"
+        ;;
+esac
 
 if [[ -z "$freecad_cmd" ]]; then
     if command -v freecadcmd >/dev/null 2>&1; then
@@ -104,16 +118,25 @@ if [[ -z "$freecad_cmd" ]]; then
         freecad_cmd="$(command -v FreeCADCmd)"
     elif command -v freecad >/dev/null 2>&1; then
         freecad_cmd="$(command -v freecad)"
+        freecad_console_args=(-c)
     elif command -v FreeCAD >/dev/null 2>&1; then
         freecad_cmd="$(command -v FreeCAD)"
+        freecad_console_args=(-c)
     else
         die "No FreeCAD executable was found. Install FreeCAD or use --freecadcmd PATH."
     fi
 fi
 [[ -x "$freecad_cmd" ]] || die "FreeCAD is not executable: $freecad_cmd"
+if ((${#freecad_console_args[@]} == 0)); then
+    case "$(basename -- "$freecad_cmd")" in
+        freecad|FreeCAD)
+            freecad_console_args=(-c)
+            ;;
+    esac
+fi
 
 if [[ -z "$output_dir" ]]; then
-    output_dir="$project_root/output_v2"
+    output_dir="$project_root/$default_output_name"
 elif [[ "$output_dir" != /* ]]; then
     output_dir="$PWD/$output_dir"
 fi
@@ -125,6 +148,9 @@ log_file="$build_dir/freecad-$timestamp.log"
 
 printf 'Generator: %s\n' "$generator"
 printf 'FreeCAD:    %s\n' "$freecad_cmd"
+if ((${#freecad_console_args[@]})); then
+    printf 'Mode:       console (%s)\n' "${freecad_console_args[*]}"
+fi
 printf 'Output:     %s\n' "$output_dir"
 printf 'Log:        %s\n' "$log_file"
 
@@ -135,15 +161,23 @@ export PYTHONUNBUFFERED=1
 # consistently. pipefail preserves FreeCAD's failure through tee.
 (
     cd -- "$generator_dir"
-    "$freecad_cmd" "$generator"
+    "$freecad_cmd" "${freecad_console_args[@]}" "$generator"
 ) 2>&1 | tee -- "$log_file"
 
-fcstd="$output_dir/island_concept_v2.FCStd"
-work_step="$output_dir/island_concept_v2_WORK.step"
-party_step="$output_dir/island_concept_v2_PARTY.step"
+artifacts=(
+    "$output_dir/$model_name.FCStd"
+    "$output_dir/${model_name}_WORK.step"
+    "$output_dir/${model_name}_PARTY.step"
+)
+if [[ "$model_name" == "island_concept_v21" ]]; then
+    artifacts+=(
+        "$output_dir/${model_name}_collision_report.json"
+        "$output_dir/${model_name}_plan.svg"
+    )
+fi
 
 missing=0
-for artifact in "$fcstd" "$work_step" "$party_step"; do
+for artifact in "${artifacts[@]}"; do
     if [[ -s "$artifact" ]]; then
         printf 'OK: %s (%s bytes)\n' "$artifact" "$(stat -c '%s' -- "$artifact")"
     else
@@ -156,6 +190,7 @@ done
 printf 'Build completed successfully.\n'
 
 if ((open_after)); then
+    fcstd="$output_dir/$model_name.FCStd"
     if command -v freecad >/dev/null 2>&1; then
         freecad "$fcstd" >/dev/null 2>&1 &
     elif command -v FreeCAD >/dev/null 2>&1; then

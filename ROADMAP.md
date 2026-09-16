@@ -209,7 +209,7 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 - [x] Uchovat V1/V2 jako historické prostorové studie.
 - [x] Přidat shellový runner pro FreeCADCmd a kontrolu výstupů.
 - [ ] Uspořádat adresáře a přesunout generátor bez přerušení buildu. *(Přesun proveden; čeká ověření reálným FreeCADCmd.)*
-- [ ] Přidat `.gitignore` pro logy, cache a lokální buildy.
+- [x] Přidat `.gitignore` pro logy, cache a lokální buildy.
 - [ ] Zapsat podporované verze FreeCADu, Pythonu a OpenCascade.
 - [ ] Přidat CI smoke test: spuštění generátoru, neprázdný FCStd/STEP, počet očekávaných objektů.
 
@@ -217,13 +217,13 @@ Generované FCStd/STEP soubory mohou být vydávané jako artefakty buildu nebo 
 
 ### M1 — Ergonomický půdorys V2.1
 
-- [ ] Nahradit pravidelný centrální šestiúhelník trojnásobně symetrickým nepravidelným obrysem.
-- [ ] Parametrizovat čelo 800 mm a pracovní hloubku 500–600 mm, výchozí 550 mm.
-- [ ] Odvodit P/S/T desky z ergonomických hran a odstranit všechny půdorysné překryvy.
-- [ ] Natočit S/T monitory k uživateli; ověřit zorné úhly, vzdálenost a vzájemné zakrytí.
-- [ ] Dopočítat tvar a rozměry S/T místo použití pevné šířky 600 mm.
-- [ ] Doplnit 2D kótovaný půdorys a parametrické kontrolní rozměry.
-- [ ] Ověřit polohy židlí, prostor pro nohy, vstup a opuštění pracoviště.
+- [x] Nahradit pravidelný centrální šestiúhelník trojnásobně symetrickým nepravidelným obrysem.
+- [x] Parametrizovat čelo 800 mm a pracovní hloubku 500–600 mm, výchozí 550 mm.
+- [x] Odvodit P/S/T desky z ergonomických hran a odstranit všechny půdorysné překryvy.
+- [x] Natočit S/T monitory k uživateli; ověřit zorné úhly, vzdálenost a vzájemné zakrytí.
+- [x] Dopočítat tvar a rozměry S/T místo použití pevné šířky 600 mm.
+- [x] Doplnit 2D kótovaný půdorys a parametrické kontrolní rozměry.
+- [x] Ověřit polohy židlí, prostor pro nohy, vstup a opuštění pracoviště v parametrickém půdorysu; fyzická uživatelská validace zůstává v M5.
 
 **Hotovo, když:** žádné dvě pracovní desky se neprotínají, každý uživatel má 500–600 mm použitelné hloubky a všechny tři monitory jsou ergonomicky orientované.
 
