@@ -18,7 +18,8 @@ CONFIG_PATH = os.path.join(PROJECT_ROOT, "config", "design_parameters.toml")
 PARAMETER_SPECS = (
     ("primary_depth", "Hloubka P/S/T", 400.0, 250.0, 800.0, "mm", "Společná kolmá vzdálenost front–rear."),
     ("technical_channel_width", "Technologický kanál", 300.0, 180.0, 700.0, "mm", "Volná mezera mezi dvojicí S/T."),
-    ("side_desk_length", "Délka S/T", 1000.0, 500.0, 1500.0, "mm", "Délka hlavních rovnoběžných hran S/T."),
+    ("side_desk_length", "Délka Work křídla (S/T)", 1000.0, 500.0, 1500.0, "mm", "Délka hlavních rovnoběžných hran S/T."),
+    ("party_arm_length", "Délka Party ramene", 1000.0, 500.0, 2000.0, "mm", "Délka Party křídla; nesmí být kratší než S/T ve Work."),
     ("user_edge_width", "Čelní hrana P", 800.0, 500.0, 1200.0, "mm", "Hrana primární desky směrem k uživateli."),
     ("user_clearance", "Odstup uživatele", 550.0, 250.0, 800.0, "mm", "Odstup referenční polohy očí od čelní hrany P."),
     ("primary_monitor_radius", "P monitor – poloměr", 400.0, 200.0, 700.0, "mm", "Radiální poloha primárního monitoru."),
@@ -76,6 +77,10 @@ def validate_parameters(values):
         )
     if values["party_module_thickness"] >= values["party_surface_height"]:
         errors.append("Tloušťka party modulu musí být menší než jeho horní výška.")
+    if values["party_arm_length"] < values["side_desk_length"]:
+        errors.append(
+            "Délka Party ramene musí být alespoň stejná jako délka Work křídla (S/T)."
+        )
     if values["party_arm_axis_diameter"] > values["technical_channel_width"]:
         errors.append("Otočná osa ramene se nevejde do technologického kanálu.")
     if values["party_guide_diameter"] > values["technical_channel_width"]:

@@ -114,6 +114,11 @@ def test_party_layer_has_one_central_and_three_nonoverlapping_arm_modules():
     assert geometry.collision_pairs(modules) == []
 
 
+def test_party_and_work_wing_lengths_are_independent_with_party_not_shorter():
+    assert geometry.PARTY_ARM_LENGTH >= geometry.SIDE_DESK_LENGTH
+    assert geometry.party_arm_dimensions()[1] == geometry.PARTY_ARM_LENGTH
+
+
 def test_party_module_seams_close_exactly_and_cover_work_layout():
     assert geometry.party_seam_failures() == []
     assert geometry.party_coverage_failures() == []

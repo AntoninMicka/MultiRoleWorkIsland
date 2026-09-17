@@ -18,7 +18,7 @@ Pracovní název projektu a repozitáře: **MultiRoleWorkIsland**.
 - Technický kanál mezi sousedními plochami na rameni má ve V3.0 pracovní hodnotu 300 mm; musí se ověřit podle reálných monitorových liftů, konstrukce a kabelových řetězů.
 - Čelní hrana pracoviště směrem k uživateli má mít přibližně 800 mm.
 - V3.0 zmenšuje radiální hloubku primární pracovní desky na 400 mm. Původní studie V2.1–V2.3 ověřovala 500–600 mm s výchozí hodnotou 550 mm; při zachování 150mm zadního nosného pásu zbývá 250mm referenční prostor pro nohy, takže ergonomii kratší desky je nutné znovu ověřit fyzickou maketou.
-- V3.0 používá společnou 400mm vzdálenost mezi hlavní přední a zadní hranou všech P/S/T desek. Aktuální konfigurační délka S/T je 1200 mm; vznikají přímým vysunutím celé boční hrany P, takže napojení je plynulé bez přechodových segmentů a zářezů.
+- V3.0 používá společnou 400mm vzdálenost mezi hlavní přední a zadní hranou všech P/S/T desek. Aktuální konfigurační délka S/T je 1200 mm; vznikají přímým vysunutím celé boční hrany P, takže napojení je plynulé bez přechodových segmentů a zářezů. Délka Party ramene je samostatný parametr a platí `Party >= Work`.
 - P/S/T desky se nesmějí půdorysně překrývat. Jejich tvar se má odvodit od polohy uživatele, monitoru, ergonomické hloubky a hran sousedních pracovišť, nikoliv z pevných obdélníků.
 - Centrální party útvar má trojnásobnou symetrii, ale nemá být pravidelným šestiúhelníkem. Tři hlavní hrany orientované k uživatelům mají přibližně 800 mm; zbývající hrany vzniknou z návaznosti desek.
 - Primární monitory tvoří trojúhelník uprostřed. Sekundární a terciární monitor každého pracoviště se orientují k jeho uživateli; nemají být pouze kolmé k ose ramene.

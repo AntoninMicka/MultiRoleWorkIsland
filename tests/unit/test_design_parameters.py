@@ -11,6 +11,8 @@ def test_repository_configuration_matches_current_design():
     assert values["primary_depth"] == 400.0
     assert values["technical_channel_width"] == 300.0
     assert values["side_desk_length"] == 1200.0
+    assert values["party_arm_length"] == 1200.0
+    assert values["party_arm_length"] >= values["side_desk_length"]
     assert design_parameters.validate_parameters(values) == []
 
 
@@ -40,16 +42,40 @@ def test_party_mechanism_must_fit_inside_technical_channel():
     assert any("Vedení Party" in error for error in errors)
 
 
+def test_party_arm_must_not_be_shorter_than_work_wing():
+    values = dict(design_parameters.DEFAULTS)
+    values["side_desk_length"] = 1200.0
+    values["party_arm_length"] = 1199.0
+    errors = design_parameters.validate_parameters(values)
+    assert any("Délka Party ramene" in error for error in errors)
+
+
 def test_geometry_recalculates_linked_values_from_inputs():
     original = dict(geometry.PARAMETERS)
     changed = dict(original)
     changed["primary_depth"] = 420.0
     changed["technical_channel_width"] = 320.0
+    changed["side_desk_length"] = 1100.0
+    changed["party_arm_length"] = 1350.0
     try:
         geometry.apply_parameters(changed)
         assert geometry.WORK_DEPTH == 420.0
         assert geometry.SIDE_DESK_WIDTH == 420.0
         assert geometry.TECH_CHANNEL_WIDTH == 320.0
+        assert geometry.SIDE_DESK_LENGTH == 1100.0
+        assert geometry.PARTY_ARM_LENGTH == 1350.0
+        assert math.isclose(
+            geometry.distance(
+                geometry.side_polygon("S", 0.0)[0],
+                geometry.side_polygon("S", 0.0)[1],
+            ),
+            1100.0,
+            abs_tol=1e-9,
+        )
+        assert geometry.party_arm_dimensions()[1] == 1350.0
+        assert geometry.party_seam_failures() == []
+        assert geometry.party_coverage_failures() == []
+        assert geometry.collision_pairs(geometry.party_module_polygons()) == []
         assert geometry.USER_RADIUS == (
             geometry.PRIMARY_INNER_RADIUS
             + changed["primary_depth"]

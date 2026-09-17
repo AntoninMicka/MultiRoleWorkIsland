@@ -6,8 +6,10 @@
 primary_depth = 400
 # Technologický kanál [mm]
 technical_channel_width = 300
-# Délka S/T [mm]
-side_desk_length = 1200
+# Délka Work křídla (S/T) [mm]
+side_desk_length = 800
+# Délka Party ramene [mm]
+party_arm_length = 1400
 # Čelní hrana P [mm]
 user_edge_width = 800
 # Odstup uživatele [mm]

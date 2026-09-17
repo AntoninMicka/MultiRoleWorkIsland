@@ -39,7 +39,7 @@ def apply_parameters(parameters):
 
     global PARAMETERS
     global USER_EDGE_WIDTH, WORK_DEPTH, MONITOR_EDGE_WIDTH, PRIMARY_INNER_RADIUS
-    global TECH_CHANNEL_WIDTH, SIDE_DESK_LENGTH, SIDE_DESK_WIDTH, USER_RADIUS
+    global TECH_CHANNEL_WIDTH, SIDE_DESK_LENGTH, PARTY_ARM_LENGTH, SIDE_DESK_WIDTH, USER_RADIUS
     global PRIMARY_MONITOR_RADIUS, SIDE_MONITOR_RADIUS, SIDE_MONITOR_CHANNEL_OFFSET
     global SIDE_LIFT_RADIUS, SIDE_LIFT_CHANNEL_OFFSET
     global PRIMARY_MONITOR_WIDTH, SIDE_MONITOR_WIDTH, MONITOR_BODY_THICKNESS
@@ -59,6 +59,7 @@ def apply_parameters(parameters):
     WORK_DEPTH = values["primary_depth"]
     TECH_CHANNEL_WIDTH = values["technical_channel_width"]
     SIDE_DESK_LENGTH = values["side_desk_length"]
+    PARTY_ARM_LENGTH = values["party_arm_length"]
     SIDE_DESK_WIDTH = WORK_DEPTH
     arm_sine = math.sin(math.radians(60.0))
     arm_cosine = math.cos(math.radians(60.0))
@@ -510,7 +511,7 @@ def party_arm_dimensions():
     seam_corner = rotate_point(primary[2], -60.0)
     seam_radius = seam_corner[0]
     half_width = abs(seam_corner[1])
-    return seam_radius, SIDE_DESK_LENGTH, half_width
+    return seam_radius, PARTY_ARM_LENGTH, half_width
 
 
 def party_arm_polygon(arm_angle):

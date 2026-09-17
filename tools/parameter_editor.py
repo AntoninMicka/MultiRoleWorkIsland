@@ -58,7 +58,11 @@ def derived_values(values):
             values["side_lift_radius"] - values["side_monitor_radius"],
             values["side_monitor_offset"] - values["side_lift_offset"],
         ),
-        "Délka party ramene": values["side_desk_length"],
+        "Délka Work křídla (S/T)": values["side_desk_length"],
+        "Délka party ramene": values["party_arm_length"],
+        "Přesah Party oproti Work": (
+            values["party_arm_length"] - values["side_desk_length"]
+        ),
         "Výška podpory Party": (
             values["party_surface_height"] - values["party_module_thickness"]
         ),
@@ -274,6 +278,7 @@ class ParameterEditor:
             lines.extend((
                 "✓ P/S/T front–rear hloubka je společný parametr",
                 "✓ technologický kanál je odvozen mezi hranami S/T",
+                "✓ délka Party ramene je alespoň délka S/T ve Work",
                 "✓ lift se musí vejít do poloviny kanálu",
                 "✓ party podpora = výška Party − tloušťka modulu",
                 "✓ kontrola kolizí, rovnoběžnosti, spár a pokrytí prošla",

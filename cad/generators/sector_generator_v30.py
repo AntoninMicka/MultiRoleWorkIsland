@@ -1244,6 +1244,7 @@ def write_design_reports(cad_collisions, storage_collisions, party_motion):
             "usable_work_depth": Geometry.WORK_DEPTH,
             "technical_channel_width": Geometry.TECH_CHANNEL_WIDTH,
             "side_desk_length": Geometry.SIDE_DESK_LENGTH,
+            "party_arm_length": Geometry.PARTY_ARM_LENGTH,
             "side_desk_width": Geometry.SIDE_DESK_WIDTH,
             "side_lift_channel_edge_clearance": side_lift_channel_clearance,
             "central_user_edge": Geometry.CENTRAL_USER_EDGE,

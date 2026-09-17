@@ -5,6 +5,8 @@ dokumentaci ani o potvrzení únosnosti, životnosti nebo funkční bezpečnosti
 
 ## Ramenní modul
 
+- Délka Party ramene je nezávislá na délce S/T pracovního křídla; kvůli
+  pokrytí pracovní vrstvy musí platit `party_arm_length >= side_desk_length`.
 - Dva synchronizované svislé vozíky leží na podélné ose technologického kanálu,
   jeden u centrální spáry a druhý na vnějším konci modulu.
 - Vozíky nesou společnou podélnou osu pro otočení desky o 90°.
